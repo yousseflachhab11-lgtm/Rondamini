@@ -33,62 +33,52 @@ html,body{
   --rem-color:#fff;
 }
 
-/* ⚡ النافذة الزجاجية — أصغر */
+/* ⚡ النافذة = كامل الـ WebView */
 .glass-window{
   position:fixed;
   top:0;left:0;
-  width:260px;
+  width:100%;
+  height:100%;
+  box-sizing:border-box;
   background:var(--glass-bg);
   backdrop-filter:blur(14px) saturate(150%);
   -webkit-backdrop-filter:blur(14px) saturate(150%);
   border:1px solid var(--glass-border);
-  border-radius:16px;
+  border-radius:12px;
   box-shadow:0 8px 32px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.2);
   z-index:99999;
-  padding:10px;
+  padding:6px;
   pointer-events:auto !important;
-  will-change:transform;
-  transform:translate3d(0,0,0);
-  backface-visibility:hidden;
-  -webkit-backface-visibility:hidden;
-}
-
-@media (orientation: landscape) {
-  .glass-window { width: 220px; padding: 8px; }
-  .glass-cell { font-size: 16px; }
-  .glass-counter { font-size: 16px; height: 30px; min-width: 44px; }
-  .glass-action { height: 30px; font-size: 13px; }
-  .glass-dropped { min-height: 24px; }
-  .glass-chip { font-size: 12px; padding: 3px 6px; }
+  overflow:hidden;
 }
 
 .glass-dropped{
-  min-height:30px;display:flex;align-items:center;gap:5px;
-  padding:4px 6px;margin-bottom:6px;background:rgba(255,255,255,.08);
-  border:1px solid var(--glass-border);border-radius:10px;
+  min-height:22px;display:flex;align-items:center;gap:3px;
+  padding:2px 4px;margin-bottom:4px;background:rgba(255,255,255,.08);
+  border:1px solid var(--glass-border);border-radius:6px;
   overflow-x:auto;scrollbar-width:none;
 }
 .glass-dropped::-webkit-scrollbar{display:none}
-.glass-pin{font-size:11px;opacity:.8}
+.glass-pin{font-size:9px;opacity:.8}
 .glass-chip{
   background:var(--glass-btn);border:1px solid var(--glass-btn-border);
-  padding:3px 7px;border-radius:8px;font-weight:900;font-size:13px;
+  padding:2px 5px;border-radius:6px;font-weight:900;font-size:10px;
   color:var(--text-main);flex-shrink:0;
 }
 .glass-chip.latest{
-  background:rgba(255,215,0,.45);border:2px solid #ffd700;color:#ffd700;
-  box-shadow:0 0 10px rgba(255,215,0,.7);font-size:12px;padding:2px 8px;
+  background:rgba(255,215,0,.45);border:1px solid #ffd700;color:#ffd700;
+  font-size:10px;padding:1px 6px;
 }
-.glass-empty{font-size:11px;color:var(--text-main);opacity:.65;padding:0 4px}
+.glass-empty{font-size:9px;color:var(--text-main);opacity:.65;padding:0 3px}
 
 .glass-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:6px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-bottom:4px;
 }
 
 .glass-cell{
   position:relative;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
-  background:var(--glass-btn);border:1px solid var(--glass-btn-border);border-radius:8px;
-  color:var(--text-main);font-weight:900;font-size:18px;letter-spacing:-0.5px;
+  background:var(--glass-btn);border:1px solid var(--glass-btn-border);border-radius:6px;
+  color:var(--text-main);font-weight:900;font-size:13px;letter-spacing:-0.5px;
   cursor:pointer;transition:transform .08s,background .2s;
   -webkit-user-select:none;user-select:none;pointer-events:auto;
 }
@@ -100,33 +90,33 @@ html,body{
 
 @keyframes glassDangerPulse{
   0%,100%{box-shadow:inset 0 0 0 rgba(230,59,59,0)}
-  50%{box-shadow:inset 0 0 14px rgba(230,59,59,.9)}
+  50%{box-shadow:inset 0 0 10px rgba(230,59,59,.9)}
 }
 .glass-cell.danger-pulse{animation:glassDangerPulse 1.2s infinite}
 
 .glass-rem{
-  position:absolute;bottom:2px;left:2px;min-width:14px;height:14px;
-  padding:0 3px;border-radius:4px;background:var(--rem-bg);color:var(--rem-color);
-  font-size:9px;font-weight:bold;line-height:14px;text-align:center;pointer-events:none;
+  position:absolute;bottom:1px;left:1px;min-width:11px;height:11px;
+  padding:0 2px;border-radius:3px;background:var(--rem-bg);color:var(--rem-color);
+  font-size:7px;font-weight:bold;line-height:11px;text-align:center;pointer-events:none;
 }
 .glass-cell.c3 .glass-rem{background:rgba(46,204,85,.9);color:#0a2410}
 .glass-cell.c2 .glass-rem{background:rgba(255,215,0,.9);color:#3a2c00}
 .glass-cell.c1 .glass-rem{background:rgba(230,59,59,.95);color:#fff}
 .glass-cell.c0 .glass-rem{background:rgba(80,20,20,.8);color:#c07070}
 
-.glass-footer{display:flex;align-items:center;gap:5px}
+.glass-footer{display:flex;align-items:center;gap:3px}
 .glass-counter{
-  flex:0 0 auto;min-width:48px;height:36px;display:flex;align-items:center;justify-content:center;
-  background:rgba(0,0,0,.5);border:1px solid var(--glass-border);border-radius:8px;
-  font-size:18px;font-weight:900;color:#ffd700;letter-spacing:-1px;
+  flex:0 0 auto;min-width:32px;height:26px;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.5);border:1px solid var(--glass-border);border-radius:6px;
+  font-size:14px;font-weight:900;color:#ffd700;letter-spacing:-1px;
 }
-.glass-counter.low{color:#ff4d4d;text-shadow:0 0 8px rgba(255,77,77,.7)}
-.glass-counter.done{color:#00e676;text-shadow:0 0 8px rgba(0,230,118,.8)}
+.glass-counter.low{color:#ff4d4d;text-shadow:0 0 6px rgba(255,77,77,.7)}
+.glass-counter.done{color:#00e676;text-shadow:0 0 6px rgba(0,230,118,.8)}
 
 .glass-action{
-  flex:1;height:36px;display:flex;align-items:center;justify-content:center;
-  background:var(--glass-btn);border:1px solid var(--glass-btn-border);border-radius:8px;
-  color:var(--text-main);font-size:14px;font-weight:900;cursor:pointer;
+  flex:1;height:26px;display:flex;align-items:center;justify-content:center;
+  background:var(--glass-btn);border:1px solid var(--glass-btn-border);border-radius:6px;
+  color:var(--text-main);font-size:11px;font-weight:900;cursor:pointer;
   transition:transform .08s,background .2s;pointer-events:auto;
 }
 .glass-action:active{transform:scale(.94)}
@@ -134,22 +124,20 @@ html,body{
 .glass-reset{background:rgba(255,255,255,.2)}
 
 .glass-ctrl{
-  position:absolute;width:28px;height:28px;border-radius:50%;
-  border:2px solid #fff;color:#fff;font-size:16px;font-weight:900;
+  position:absolute;width:22px;height:22px;border-radius:50%;
+  border:2px solid #fff;color:#fff;font-size:12px;font-weight:900;
   cursor:pointer;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 12px rgba(0,0,0,.4);z-index:10;pointer-events:auto;
+  box-shadow:0 3px 10px rgba(0,0,0,.4);z-index:10;pointer-events:auto;
 }
-.glass-minus{top:-12px;left:-12px;background:rgba(230,59,59,.95)}
-.glass-plus{top:-12px;right:-12px;background:rgba(46,204,85,.95)}
-.glass-overlay{bottom:-12px;left:50%;margin-left:-14px;background:rgba(59,130,246,.95);width:28px;height:28px;font-size:14px;padding:0}
+.glass-minus{top:-10px;left:-10px;background:rgba(230,59,59,.95)}
+.glass-plus{top:-10px;right:-10px;background:rgba(46,204,85,.95)}
+.glass-overlay{bottom:-10px;left:50%;margin-left:-11px;background:rgba(59,130,246,.95);width:22px;height:22px;font-size:11px;padding:0}
 .glass-ctrl:active{transform:scale(.9)}
 </style>
 </head>
 <body>
 
 <div class="glass-window" id="glassWindow">
-  <button class="glass-ctrl glass-minus" id="glassMinus" title="تصغير">−</button>
-  <button class="glass-ctrl glass-plus" id="glassPlus" title="تكبير">+</button>
   <button class="glass-ctrl glass-overlay" id="glassOverlay" title="تفعيل Overlay" style="display:none;">🚀</button>
   <div class="glass-dropped" id="glassDropped">
     <span class="glass-pin">📌</span>
@@ -176,8 +164,6 @@ const glassDropped = document.getElementById('glassDropped');
 const glassCounter = document.getElementById('glassCounter');
 const glassUndo    = document.getElementById('glassUndo');
 const glassReset   = document.getElementById('glassReset');
-const glassMinus   = document.getElementById('glassMinus');
-const glassPlus    = document.getElementById('glassPlus');
 const glassOverlay = document.getElementById('glassOverlay');
 
 function saveData(){
@@ -309,52 +295,6 @@ glassReset.onclick = (e) => {
   playSound('milestone'); vibrate(40); render();
 };
 
-let currentX = 0, currentY = 0;
-let currentScale = parseFloat(localStorage.getItem('ronda_mini_scale')) || 1;
-
-(function(){
-  const saved = JSON.parse(localStorage.getItem('ronda_mini_pos_v4'));
-  if(saved && saved.xPct !== undefined){
-    currentX = (saved.xPct / 100) * window.innerWidth;
-    currentY = (saved.yPct / 100) * window.innerHeight;
-  } else {
-    currentX = Math.max(10, window.innerWidth - 280);
-    currentY = 60;
-  }
-  clampPosition();
-})();
-
-function clampPosition(){
-  const w = glassWindow.offsetWidth * currentScale;
-  const h = glassWindow.offsetHeight * currentScale;
-  const maxX = window.innerWidth - w;
-  const maxY = window.innerHeight - h;
-  currentX = Math.max(0, Math.min(maxX, currentX));
-  currentY = Math.max(0, Math.min(maxY, currentY));
-}
-
-function applyTransform(){
-  glassWindow.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) scale(${currentScale})`;
-  glassWindow.style.transformOrigin = 'top left';
-}
-applyTransform();
-
-glassPlus.onclick = (e) => {
-  e.stopPropagation();
-  currentScale = Math.min(2.5, currentScale + 0.1);
-  localStorage.setItem('ronda_mini_scale', currentScale);
-  clampPosition(); applyTransform();
-  playSound('click'); vibrate(15);
-};
-
-glassMinus.onclick = (e) => {
-  e.stopPropagation();
-  currentScale = Math.max(0.4, currentScale - 0.1);
-  localStorage.setItem('ronda_mini_scale', currentScale);
-  clampPosition(); applyTransform();
-  playSound('click'); vibrate(15);
-};
-
 /* ⚡ زر تفعيل الـ Overlay (🚀) */
 (function(){
   if(!glassOverlay) return;
@@ -373,89 +313,6 @@ glassMinus.onclick = (e) => {
     vibrate(30);
   };
 })();
-
-/* السحب */
-let isDragging = false;
-let dragStartX = 0, dragStartY = 0;
-let posStartX = 0, posStartY = 0;
-let rafId = null;
-
-function startDrag(clientX, clientY){
-  isDragging = true;
-  dragStartX = clientX;
-  dragStartY = clientY;
-  posStartX = currentX;
-  posStartY = currentY;
-}
-
-function moveDrag(clientX, clientY){
-  if(!isDragging) return;
-  const dx = (clientX - dragStartX) / currentScale;
-  const dy = (clientY - dragStartY) / currentScale;
-  let x = posStartX + dx;
-  let y = posStartY + dy;
-  const w = glassWindow.offsetWidth * currentScale;
-  const h = glassWindow.offsetHeight * currentScale;
-  const maxX = window.innerWidth - w;
-  const maxY = window.innerHeight - h;
-  x = Math.max(0, Math.min(maxX, x));
-  y = Math.max(0, Math.min(maxY, y));
-  currentX = x; currentY = y;
-  if(rafId) cancelAnimationFrame(rafId);
-  rafId = requestAnimationFrame(applyTransform);
-}
-
-function endDrag(){
-  if(!isDragging) return;
-  isDragging = false;
-  const xPct = (currentX / window.innerWidth) * 100;
-  const yPct = (currentY / window.innerHeight) * 100;
-  localStorage.setItem('ronda_mini_pos_v4', JSON.stringify({xPct, yPct}));
-}
-
-glassWindow.addEventListener('touchstart', (e) => {
-  if(e.target.closest('button, .glass-cell')) return;
-  const t = e.touches[0];
-  startDrag(t.clientX, t.clientY);
-}, {passive:true});
-
-glassWindow.addEventListener('touchmove', (e) => {
-  if(!isDragging) return;
-  const t = e.touches[0];
-  moveDrag(t.clientX, t.clientY);
-  e.preventDefault();
-}, {passive:false});
-
-glassWindow.addEventListener('touchend', endDrag);
-glassWindow.addEventListener('touchcancel', endDrag);
-
-glassWindow.addEventListener('mousedown', (e) => {
-  if(e.target.closest('button, .glass-cell')) return;
-  startDrag(e.clientX, e.clientY);
-  e.preventDefault();
-});
-
-document.addEventListener('mousemove', (e) => {
-  if(!isDragging) return;
-  moveDrag(e.clientX, e.clientY);
-});
-
-document.addEventListener('mouseup', endDrag);
-
-function handleRotation(){
-  setTimeout(() => {
-    const saved = JSON.parse(localStorage.getItem('ronda_mini_pos_v4'));
-    if(saved && saved.xPct !== undefined){
-      currentX = (saved.xPct / 100) * window.innerWidth;
-      currentY = (saved.yPct / 100) * window.innerHeight;
-    }
-    clampPosition();
-    applyTransform();
-  }, 300);
-}
-
-window.addEventListener('resize', handleRotation);
-window.addEventListener('orientationchange', handleRotation);
 
 render();
 </script>
