@@ -40,9 +40,16 @@ public class OverlayService extends Service {
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        // ⚡ الحجم الصغير — بحجم Rondacalcul
-        int widthPx = dpToPx(260);
-        int heightPx = dpToPx(340);
+        // ⚡ نجيبو عرض الشاشة
+        DisplayMetrics metrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+        int screenWidth = metrics.widthPixels;
+        int screenHeight = metrics.heightPixels;
+
+        // ⚡ 18% من عرض الشاشة
+        int widthPx = (int)(screenWidth * 0.18);
+        // ⚡ الطول — نسبة أقل باش ما يحجبش
+        int heightPx = (int)(screenWidth * 0.24);
 
         params = new WindowManager.LayoutParams(
             widthPx,
@@ -55,7 +62,7 @@ public class OverlayService extends Service {
         );
         params.gravity = Gravity.TOP | Gravity.END;
         params.x = dpToPx(5);
-        params.y = dpToPx(40);
+        params.y = dpToPx(50);
 
         webView = new WebView(this);
         webView.setBackgroundColor(Color.TRANSPARENT);
