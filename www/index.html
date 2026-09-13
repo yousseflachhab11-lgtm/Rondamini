@@ -399,36 +399,36 @@ let isHidden = false;
 toggleBtn.onclick = (e) => {
   e.stopPropagation();
   isHidden = !isHidden;
-  
+
   if(isHidden){
     glassWindow.classList.add('hiding');
     glassWindow.classList.add('hidden-overlay');
     toggleBtn.textContent = '⬆️';
     toggleBtn.classList.add('hidden-mode');
-    
-    if(typeof AndroidOverlay !== 'undefined' && AndroidOverlay.setTouchable){
-      try{ AndroidOverlay.setTouchable(false); }catch(err){}
-    }
-    
+
+if(typeof AndroidOverlayService !== 'undefined' && AndroidOverlayService.setTouchable){
+  try{ AndroidOverlayService.setTouchable(false); }catch(err){}
+}
+
     setTimeout(() => {
       glassWindow.classList.remove('hiding');
     }, 350);
-    
+
   } else {
     glassWindow.classList.add('hiding');
     glassWindow.classList.remove('hidden-overlay');
     toggleBtn.textContent = '⬇️';
     toggleBtn.classList.remove('hidden-mode');
-    
-    if(typeof AndroidOverlay !== 'undefined' && AndroidOverlay.setTouchable){
-      try{ AndroidOverlay.setTouchable(true); }catch(err){}
-    }
-    
+
+if(typeof AndroidOverlayService !== 'undefined' && AndroidOverlayService.setTouchable){
+  try{ AndroidOverlayService.setTouchable(true); }catch(err){}
+}
+
     setTimeout(() => {
       glassWindow.classList.remove('hiding');
     }, 350);
   }
-  
+
   playSound('click');
   vibrate(30);
 };
