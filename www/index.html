@@ -47,38 +47,38 @@ html,body{
   border-radius:12px;
   box-shadow:0 8px 32px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.2);
   z-index:99999;
-  padding:6px;
+  padding:8px;
   pointer-events:auto !important;
   overflow:hidden;
 }
 
 .glass-dropped{
-  min-height:22px;display:flex;align-items:center;gap:3px;
-  padding:2px 4px;margin-bottom:4px;background:rgba(255,255,255,.08);
+  min-height:26px;display:flex;align-items:center;gap:4px;
+  padding:3px 5px;margin-bottom:5px;background:rgba(255,255,255,.08);
   border:1px solid var(--glass-border);border-radius:6px;
   overflow-x:auto;scrollbar-width:none;
 }
 .glass-dropped::-webkit-scrollbar{display:none}
-.glass-pin{font-size:9px;opacity:.8}
+.glass-pin{font-size:11px;opacity:.8}
 .glass-chip{
   background:var(--glass-btn);border:1px solid var(--glass-btn-border);
-  padding:2px 5px;border-radius:6px;font-weight:900;font-size:10px;
+  padding:3px 6px;border-radius:6px;font-weight:900;font-size:12px;
   color:var(--text-main);flex-shrink:0;
 }
 .glass-chip.latest{
   background:rgba(255,215,0,.45);border:1px solid #ffd700;color:#ffd700;
-  font-size:10px;padding:1px 6px;
+  font-size:12px;padding:2px 7px;
 }
-.glass-empty{font-size:9px;color:var(--text-main);opacity:.65;padding:0 3px}
+.glass-empty{font-size:11px;color:var(--text-main);opacity:.65;padding:0 4px}
 
 .glass-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-bottom:4px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:5px;
 }
 
 .glass-cell{
   position:relative;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
-  background:var(--glass-btn);border:1px solid var(--glass-btn-border);border-radius:6px;
-  color:var(--text-main);font-weight:900;font-size:13px;letter-spacing:-0.5px;
+  background:var(--glass-btn);border:1px solid var(--glass-btn-border);border-radius:8px;
+  color:var(--text-main);font-weight:900;font-size:18px;letter-spacing:-0.5px;
   cursor:pointer;transition:transform .08s,background .2s;
   -webkit-user-select:none;user-select:none;pointer-events:auto;
 }
@@ -90,33 +90,28 @@ html,body{
 
 @keyframes glassDangerPulse{
   0%,100%{box-shadow:inset 0 0 0 rgba(230,59,59,0)}
-  50%{box-shadow:inset 0 0 10px rgba(230,59,59,.9)}
+  50%{box-shadow:inset 0 0 12px rgba(230,59,59,.9)}
 }
 .glass-cell.danger-pulse{animation:glassDangerPulse 1.2s infinite}
 
+/* ⚡ العدادات مخفية — باش الأرقام تبان واضحة */
 .glass-rem{
-  position:absolute;bottom:1px;left:1px;min-width:11px;height:11px;
-  padding:0 2px;border-radius:3px;background:var(--rem-bg);color:var(--rem-color);
-  font-size:7px;font-weight:bold;line-height:11px;text-align:center;pointer-events:none;
+  display:none !important;
 }
-.glass-cell.c3 .glass-rem{background:rgba(46,204,85,.9);color:#0a2410}
-.glass-cell.c2 .glass-rem{background:rgba(255,215,0,.9);color:#3a2c00}
-.glass-cell.c1 .glass-rem{background:rgba(230,59,59,.95);color:#fff}
-.glass-cell.c0 .glass-rem{background:rgba(80,20,20,.8);color:#c07070}
 
-.glass-footer{display:flex;align-items:center;gap:3px}
+.glass-footer{display:flex;align-items:center;gap:4px}
 .glass-counter{
-  flex:0 0 auto;min-width:32px;height:26px;display:flex;align-items:center;justify-content:center;
-  background:rgba(0,0,0,.5);border:1px solid var(--glass-border);border-radius:6px;
-  font-size:14px;font-weight:900;color:#ffd700;letter-spacing:-1px;
+  flex:0 0 auto;min-width:40px;height:32px;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.5);border:1px solid var(--glass-border);border-radius:8px;
+  font-size:18px;font-weight:900;color:#ffd700;letter-spacing:-1px;
 }
-.glass-counter.low{color:#ff4d4d;text-shadow:0 0 6px rgba(255,77,77,.7)}
-.glass-counter.done{color:#00e676;text-shadow:0 0 6px rgba(0,230,118,.8)}
+.glass-counter.low{color:#ff4d4d;text-shadow:0 0 8px rgba(255,77,77,.7)}
+.glass-counter.done{color:#00e676;text-shadow:0 0 8px rgba(0,230,118,.8)}
 
 .glass-action{
-  flex:1;height:26px;display:flex;align-items:center;justify-content:center;
-  background:var(--glass-btn);border:1px solid var(--glass-btn-border);border-radius:6px;
-  color:var(--text-main);font-size:11px;font-weight:900;cursor:pointer;
+  flex:1;height:32px;display:flex;align-items:center;justify-content:center;
+  background:var(--glass-btn);border:1px solid var(--glass-btn-border);border-radius:8px;
+  color:var(--text-main);font-size:13px;font-weight:900;cursor:pointer;
   transition:transform .08s,background .2s;pointer-events:auto;
 }
 .glass-action:active{transform:scale(.94)}
@@ -124,14 +119,12 @@ html,body{
 .glass-reset{background:rgba(255,255,255,.2)}
 
 .glass-ctrl{
-  position:absolute;width:22px;height:22px;border-radius:50%;
-  border:2px solid #fff;color:#fff;font-size:12px;font-weight:900;
+  position:absolute;width:26px;height:26px;border-radius:50%;
+  border:2px solid #fff;color:#fff;font-size:13px;font-weight:900;
   cursor:pointer;display:flex;align-items:center;justify-content:center;
   box-shadow:0 3px 10px rgba(0,0,0,.4);z-index:10;pointer-events:auto;
 }
-.glass-minus{top:-10px;left:-10px;background:rgba(230,59,59,.95)}
-.glass-plus{top:-10px;right:-10px;background:rgba(46,204,85,.95)}
-.glass-overlay{bottom:-10px;left:50%;margin-left:-11px;background:rgba(59,130,246,.95);width:22px;height:22px;font-size:11px;padding:0}
+.glass-overlay{bottom:-13px;left:50%;margin-left:-13px;background:rgba(59,130,246,.95);width:26px;height:26px;font-size:13px;padding:0}
 .glass-ctrl:active{transform:scale(.9)}
 </style>
 </head>
@@ -237,7 +230,8 @@ function renderGrid(){
     cell.className = 'glass-cell c' + left[n];
     if(left[n] === 1) cell.classList.add('danger-pulse');
     if(left[n] === 0) cell.style.cursor = 'not-allowed';
-    cell.innerHTML = `${n}<span class="glass-rem">${left[n]}</span>`;
+    // ⚡ بلا عدادات — غير الرقم
+    cell.innerHTML = `${n}`;
     cell.onclick = (e) => { e.preventDefault(); e.stopPropagation(); initAudio(); handleTap(n); };
     glassGrid.appendChild(cell);
   });
