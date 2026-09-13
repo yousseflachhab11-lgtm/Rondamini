@@ -9,7 +9,6 @@ import android.os.IBinder;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebView;
@@ -27,6 +26,7 @@ public class OverlayService extends Service {
         return null;
     }
 
+    // ⚡ نحولو dp لـ px
     private int dpToPx(int dp) {
         Resources r = getResources();
         return (int) TypedValue.applyDimension(
@@ -40,8 +40,10 @@ public class OverlayService extends Service {
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        int widthPx = dpToPx(300);
-        int heightPx = dpToPx(370);
+        // ⚡ الحجم بحجم Rondacalcul بالضبط
+        // 340dp عرض × 420dp طول (بحجم النافذة + الحشو)
+        int widthPx = dpToPx(340);
+        int heightPx = dpToPx(420);
 
         // ⚡ الإعدادات
         params = new WindowManager.LayoutParams(
@@ -53,7 +55,7 @@ public class OverlayService extends Service {
                 | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
             PixelFormat.TRANSLUCENT
         );
-        params.gravity = Gravity.TOP | Gravity.END;  // ⚡ END = يمين
+        params.gravity = Gravity.TOP | Gravity.END;  // ⚡ اليمين
 
         // ⚡ الهامش من اليمين
         params.x = dpToPx(10);
@@ -66,6 +68,11 @@ public class OverlayService extends Service {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
         webView.setWebViewClient(new WebViewClient());
+
+        // ⚡ نحيدو الـ scrollbars
+        webView.setVerticalScrollBarEnabled(false);
+        webView.setHorizontalScrollBarEnabled(false);
+        webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
         webView.loadUrl("file:///android_asset/public/index.html");
 
