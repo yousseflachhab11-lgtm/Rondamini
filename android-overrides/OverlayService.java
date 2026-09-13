@@ -7,10 +7,8 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebView;
@@ -22,13 +20,7 @@ public class OverlayService extends Service {
     private WebView webView;
     private WindowManager.LayoutParams params;
     
-    // ⚡ الأبعاد
-    private int screenWidth;
-    private int screenHeight;
-    private int overlayWidth;
-    private int overlayHeight;
-    private int overlayX;
-    private int overlayY;
+    private static OverlayService instance;
 
     @Nullable
     @Override
@@ -43,41 +35,50 @@ public class OverlayService extends Service {
         );
     }
 
+    public static void setTouchable(boolean touchable) {
+        if (instance == null || instance.params == null || instance.windowManager == null || instance.webView == null) {
+            return;
+        }
+        
+        if (touchable) {
+            instance.params.flags &= ~WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+        } else {
+            instance.params.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+        }
+        
+        try {
+            instance.windowManager.updateViewLayout(instance.webView, instance.params);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        // ⚡ نحسبو الشاشة
         DisplayMetrics metrics = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(metrics);
-        screenWidth = metrics.widthPixels;
-        screenHeight = metrics.heightPixels;
 
-        // ⚡ الحجم
-        overlayWidth = dpToPx(300);
-        overlayHeight = dpToPx(370);
+        int widthPx = dpToPx(300);
+        int heightPx = dpToPx(370);
 
-        // ⚡ الموضع (اليمين)
-        overlayX = screenWidth - overlayWidth - dpToPx(10);
-        overlayY = dpToPx(50);
-
-        // ⚡ الإعدادات — FLAG_NOT_TOUCH_MODAL مهمة
         params = new WindowManager.LayoutParams(
-            overlayWidth,
-            overlayHeight,
+            widthPx,
+            heightPx,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                 | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
             PixelFormat.TRANSLUCENT
         );
-        params.gravity = Gravity.TOP | Gravity.START;
-        params.x = overlayX;
-        params.y = overlayY;
+        params.gravity = Gravity.TOP | Gravity.END;
+        params.x = dpToPx(10);
+        params.y = dpToPx(50);
 
-        // ⚡ الـ WebView
         webView = new WebView(this);
         webView.setBackgroundColor(Color.TRANSPARENT);
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
@@ -88,34 +89,6 @@ public class OverlayService extends Service {
         webView.setHorizontalScrollBarEnabled(false);
         webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
-        // ⚡ ⚡ ⚡ اللمس — MotionEvent Interception
-        // هاد الـ Listener كيتفعل قبل ما يوصل اللمس للـ WebView
-        webView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // ⚡ نجيبو إحداثيات اللمس
-                float rawX = event.getRawX();
-                float rawY = event.getRawY();
-                
-                // ⚡ نتحققو واش اللمس داخل منطقة Rondacalcul
-                boolean insideOverlay = 
-                    rawX >= overlayX && 
-                    rawX <= overlayX + overlayWidth &&
-                    rawY >= overlayY && 
-                    rawY <= overlayY + overlayHeight;
-                
-                if (insideOverlay) {
-                    // ✅ داخل Rondacalcul — WebView كيتعامل معاه
-                    return false;
-                } else {
-                    // ❌ برا Rondacalcul — نمرروه للـ Android
-                    // نرجعو true باش ناكلو الحدث (باش ما يوصلش للـ WebView)
-                    // الـ FLAG_NOT_TOUCH_MODAL كيخلي اللمس يدوز للتطبيق اللي تحت
-                    return true;
-                }
-            }
-        });
-
         webView.loadUrl("file:///android_asset/public/index.html");
 
         windowManager.addView(webView, params);
@@ -124,6 +97,7 @@ public class OverlayService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        instance = null;
         if (webView != null && windowManager != null) {
             try {
                 windowManager.removeView(webView);
