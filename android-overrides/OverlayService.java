@@ -46,9 +46,9 @@ public class OverlayService extends Service {
         int screenWidth = metrics.widthPixels;
         int screenHeight = metrics.heightPixels;
 
-        // ⚡ 22% من عرض الشاشة
-        int widthPx = (int)(screenWidth * 0.22);
-        int heightPx = (int)(screenWidth * 0.29);
+        // ⚡ 30% من عرض الشاشة
+        int widthPx = (int)(screenWidth * 0.30);
+        int heightPx = (int)(screenWidth * 0.38);
 
         params = new WindowManager.LayoutParams(
             widthPx,
