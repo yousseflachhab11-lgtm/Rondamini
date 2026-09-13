@@ -33,10 +33,11 @@ html,body{
   --rem-color:#fff;
 }
 
+/* ⚡ النافذة الزجاجية — أصغر */
 .glass-window{
   position:fixed;
   top:0;left:0;
-  width:320px;
+  width:260px;
   background:var(--glass-bg);
   backdrop-filter:blur(14px) saturate(150%);
   -webkit-backdrop-filter:blur(14px) saturate(150%);
@@ -53,17 +54,17 @@ html,body{
 }
 
 @media (orientation: landscape) {
-  .glass-window { width: 260px; padding: 8px; }
-  .glass-cell { font-size: 18px; }
-  .glass-counter { font-size: 18px; height: 34px; min-width: 48px; }
-  .glass-action { height: 34px; font-size: 14px; }
-  .glass-dropped { min-height: 28px; }
-  .glass-chip { font-size: 13px; padding: 3px 6px; }
+  .glass-window { width: 220px; padding: 8px; }
+  .glass-cell { font-size: 16px; }
+  .glass-counter { font-size: 16px; height: 30px; min-width: 44px; }
+  .glass-action { height: 30px; font-size: 13px; }
+  .glass-dropped { min-height: 24px; }
+  .glass-chip { font-size: 12px; padding: 3px 6px; }
 }
 
 .glass-dropped{
-  min-height:34px;display:flex;align-items:center;gap:5px;
-  padding:4px 6px;margin-bottom:8px;background:rgba(255,255,255,.08);
+  min-height:30px;display:flex;align-items:center;gap:5px;
+  padding:4px 6px;margin-bottom:6px;background:rgba(255,255,255,.08);
   border:1px solid var(--glass-border);border-radius:10px;
   overflow-x:auto;scrollbar-width:none;
 }
@@ -71,23 +72,23 @@ html,body{
 .glass-pin{font-size:11px;opacity:.8}
 .glass-chip{
   background:var(--glass-btn);border:1px solid var(--glass-btn-border);
-  padding:4px 8px;border-radius:8px;font-weight:900;font-size:15px;
+  padding:3px 7px;border-radius:8px;font-weight:900;font-size:13px;
   color:var(--text-main);flex-shrink:0;
 }
 .glass-chip.latest{
   background:rgba(255,215,0,.45);border:2px solid #ffd700;color:#ffd700;
-  box-shadow:0 0 10px rgba(255,215,0,.7);font-size:14px;padding:3px 10px;
+  box-shadow:0 0 10px rgba(255,215,0,.7);font-size:12px;padding:2px 8px;
 }
 .glass-empty{font-size:11px;color:var(--text-main);opacity:.65;padding:0 4px}
 
 .glass-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:8px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:6px;
 }
 
 .glass-cell{
   position:relative;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
-  background:var(--glass-btn);border:1px solid var(--glass-btn-border);border-radius:10px;
-  color:var(--text-main);font-weight:900;font-size:22px;letter-spacing:-0.5px;
+  background:var(--glass-btn);border:1px solid var(--glass-btn-border);border-radius:8px;
+  color:var(--text-main);font-weight:900;font-size:18px;letter-spacing:-0.5px;
   cursor:pointer;transition:transform .08s,background .2s;
   -webkit-user-select:none;user-select:none;pointer-events:auto;
 }
@@ -104,28 +105,28 @@ html,body{
 .glass-cell.danger-pulse{animation:glassDangerPulse 1.2s infinite}
 
 .glass-rem{
-  position:absolute;bottom:3px;left:3px;min-width:15px;height:15px;
-  padding:0 3px;border-radius:5px;background:var(--rem-bg);color:var(--rem-color);
-  font-size:9px;font-weight:bold;line-height:15px;text-align:center;pointer-events:none;
+  position:absolute;bottom:2px;left:2px;min-width:14px;height:14px;
+  padding:0 3px;border-radius:4px;background:var(--rem-bg);color:var(--rem-color);
+  font-size:9px;font-weight:bold;line-height:14px;text-align:center;pointer-events:none;
 }
 .glass-cell.c3 .glass-rem{background:rgba(46,204,85,.9);color:#0a2410}
 .glass-cell.c2 .glass-rem{background:rgba(255,215,0,.9);color:#3a2c00}
 .glass-cell.c1 .glass-rem{background:rgba(230,59,59,.95);color:#fff}
 .glass-cell.c0 .glass-rem{background:rgba(80,20,20,.8);color:#c07070}
 
-.glass-footer{display:flex;align-items:center;gap:6px}
+.glass-footer{display:flex;align-items:center;gap:5px}
 .glass-counter{
-  flex:0 0 auto;min-width:56px;height:40px;display:flex;align-items:center;justify-content:center;
-  background:rgba(0,0,0,.5);border:1px solid var(--glass-border);border-radius:10px;
-  font-size:22px;font-weight:900;color:#ffd700;letter-spacing:-1px;
+  flex:0 0 auto;min-width:48px;height:36px;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.5);border:1px solid var(--glass-border);border-radius:8px;
+  font-size:18px;font-weight:900;color:#ffd700;letter-spacing:-1px;
 }
 .glass-counter.low{color:#ff4d4d;text-shadow:0 0 8px rgba(255,77,77,.7)}
 .glass-counter.done{color:#00e676;text-shadow:0 0 8px rgba(0,230,118,.8)}
 
 .glass-action{
-  flex:1;height:40px;display:flex;align-items:center;justify-content:center;
-  background:var(--glass-btn);border:1px solid var(--glass-btn-border);border-radius:10px;
-  color:var(--text-main);font-size:16px;font-weight:900;cursor:pointer;
+  flex:1;height:36px;display:flex;align-items:center;justify-content:center;
+  background:var(--glass-btn);border:1px solid var(--glass-btn-border);border-radius:8px;
+  color:var(--text-main);font-size:14px;font-weight:900;cursor:pointer;
   transition:transform .08s,background .2s;pointer-events:auto;
 }
 .glass-action:active{transform:scale(.94)}
@@ -133,46 +134,18 @@ html,body{
 .glass-reset{background:rgba(255,255,255,.2)}
 
 .glass-ctrl{
-  position:absolute;width:32px;height:32px;border-radius:50%;
-  border:2px solid #fff;color:#fff;font-size:18px;font-weight:900;
+  position:absolute;width:28px;height:28px;border-radius:50%;
+  border:2px solid #fff;color:#fff;font-size:16px;font-weight:900;
   cursor:pointer;display:flex;align-items:center;justify-content:center;
   box-shadow:0 4px 12px rgba(0,0,0,.4);z-index:10;pointer-events:auto;
 }
-.glass-minus{top:-14px;left:-14px;background:rgba(230,59,59,.95)}
-.glass-plus{top:-14px;right:-14px;background:rgba(46,204,85,.95)}
-.glass-overlay{bottom:-14px;left:50%;margin-left:-16px;background:rgba(59,130,246,.95);width:32px;height:32px;font-size:16px;padding:0}
+.glass-minus{top:-12px;left:-12px;background:rgba(230,59,59,.95)}
+.glass-plus{top:-12px;right:-12px;background:rgba(46,204,85,.95)}
+.glass-overlay{bottom:-12px;left:50%;margin-left:-14px;background:rgba(59,130,246,.95);width:28px;height:28px;font-size:14px;padding:0}
 .glass-ctrl:active{transform:scale(.9)}
-
-.toggle-overlay-btn{
-  position:fixed;
-  top:10px;
-  right:10px;
-  width:56px;
-  height:56px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#3b82f6,#1e40af);
-  border:3px solid #fff;
-  color:#fff;
-  font-size:24px;
-  font-weight:900;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 4px 16px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.3);
-  z-index:100001;
-  pointer-events:auto !important;
-  transition:transform .15s, background .2s;
-}
-.toggle-overlay-btn:active{transform:scale(.9)}
-.toggle-overlay-btn.hidden-mode{
-  background:linear-gradient(135deg,#f59e0b,#d97706);
-}
 </style>
 </head>
 <body>
-
-<button class="toggle-overlay-btn" id="toggleOverlayBtn" title="إخفاء/إظهار">⬇️</button>
 
 <div class="glass-window" id="glassWindow">
   <button class="glass-ctrl glass-minus" id="glassMinus" title="تصغير">−</button>
@@ -206,7 +179,6 @@ const glassReset   = document.getElementById('glassReset');
 const glassMinus   = document.getElementById('glassMinus');
 const glassPlus    = document.getElementById('glassPlus');
 const glassOverlay = document.getElementById('glassOverlay');
-const toggleBtn    = document.getElementById('toggleOverlayBtn');
 
 function saveData(){
   localStorage.setItem('ronda_mini_left', JSON.stringify(left));
@@ -346,7 +318,7 @@ let currentScale = parseFloat(localStorage.getItem('ronda_mini_scale')) || 1;
     currentX = (saved.xPct / 100) * window.innerWidth;
     currentY = (saved.yPct / 100) * window.innerHeight;
   } else {
-    currentX = Math.max(10, window.innerWidth - 340);
+    currentX = Math.max(10, window.innerWidth - 280);
     currentY = 60;
   }
   clampPosition();
@@ -383,9 +355,7 @@ glassMinus.onclick = (e) => {
   playSound('click'); vibrate(15);
 };
 
-/* ============================================================
-   ⚡ زر تفعيل الـ Overlay (🚀)
-   ============================================================ */
+/* ⚡ زر تفعيل الـ Overlay (🚀) */
 (function(){
   if(!glassOverlay) return;
   if(typeof AndroidOverlay !== 'undefined'){
@@ -404,35 +374,7 @@ glassMinus.onclick = (e) => {
   };
 })();
 
-/* ============================================================
-   ⚡ زر الإخفاء / الإظهار
-   ============================================================ */
-let isHidden = false;
-
-toggleBtn.onclick = (e) => {
-  e.stopPropagation();
-  isHidden = !isHidden;
-
-  if(isHidden){
-    toggleBtn.textContent = '⬆️';
-    toggleBtn.classList.add('hidden-mode');
-
-    if(typeof AndroidOverlay !== 'undefined' && AndroidOverlay.hideOverlay){
-      try{ AndroidOverlay.hideOverlay(); }catch(err){}
-    }
-  } else {
-    toggleBtn.textContent = '⬇️';
-    toggleBtn.classList.remove('hidden-mode');
-
-    if(typeof AndroidOverlay !== 'undefined' && AndroidOverlay.showOverlay){
-      try{ AndroidOverlay.showOverlay(); }catch(err){}
-    }
-  }
-
-  playSound('click');
-  vibrate(30);
-};
-
+/* السحب */
 let isDragging = false;
 let dragStartX = 0, dragStartY = 0;
 let posStartX = 0, posStartY = 0;
