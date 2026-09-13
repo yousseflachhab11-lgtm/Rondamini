@@ -1,0 +1,12 @@
+{
+  "appId": "com.ronda.mini",
+  "appName": "Ronda Mini",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true,
+    "backgroundColor": "#00000000"
+  }
+}
