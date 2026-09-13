@@ -20,6 +20,7 @@ public class OverlayService extends Service {
     private WindowManager windowManager;
     private WebView webView;
     private WindowManager.LayoutParams params;
+    private boolean isViewAdded = false;
 
     @Nullable
     @Override
@@ -34,37 +35,40 @@ public class OverlayService extends Service {
         );
     }
 
-    // ⚡ ⚡ ⚡ الدالة الداخلية (private) — كتخدم على instance
-    private void updateTouchable(boolean touchable) {
-        if (params == null || windowManager == null || webView == null) {
-            return;
-        }
-
-        if (touchable) {
-            params.flags &= ~WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
-        } else {
-            params.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
-        }
-
-        try {
-            windowManager.updateViewLayout(webView, params);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    // ⚡ ⚡ ⚡ نستقبلو الأوامر من MainActivity
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && intent.getAction() != null) {
             String action = intent.getAction();
-            if ("TOUCHABLE_OFF".equals(action)) {
-                updateTouchable(false);
-            } else if ("TOUCHABLE_ON".equals(action)) {
-                updateTouchable(true);
+
+            if ("HIDE_OVERLAY".equals(action)) {
+                hideOverlay();
+            } else if ("SHOW_OVERLAY".equals(action)) {
+                showOverlay();
             }
         }
         return START_STICKY;
+    }
+
+    private void hideOverlay() {
+        if (isViewAdded && webView != null && windowManager != null) {
+            try {
+                windowManager.removeView(webView);
+                isViewAdded = false;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void showOverlay() {
+        if (!isViewAdded && webView != null && windowManager != null && params != null) {
+            try {
+                windowManager.addView(webView, params);
+                isViewAdded = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -101,18 +105,18 @@ public class OverlayService extends Service {
 
         webView.loadUrl("file:///android_asset/public/index.html");
 
-        windowManager.addView(webView, params);
+        try {
+            windowManager.addView(webView, params);
+            isViewAdded = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (webView != null && windowManager != null) {
-            try {
-                windowManager.removeView(webView);
-            } catch (Exception e) {
-                // تجاهل
-            }
-        }
+        hideOverlay();
+        webView = null;
     }
 }
