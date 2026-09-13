@@ -14,33 +14,27 @@ public class MainActivity extends BridgeActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // شفافية النافذة
         getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-        // شفافية WebView + JavaScript Bridge
         if (getBridge() != null && getBridge().getWebView() != null) {
             getBridge().getWebView().setBackgroundColor(Color.TRANSPARENT);
             getBridge().getWebView().setLayerType(
                 android.view.View.LAYER_TYPE_HARDWARE, null
             );
 
-            // ⚡ نضيفو JavaScript Interface
             getBridge().getWebView().addJavascriptInterface(
                 new OverlayBridge(), "AndroidOverlay"
             );
         }
     }
 
-    // ⚡ هاد الكلاس كيسمح للـ HTML يتواصل مع Java
     public class OverlayBridge {
 
         @JavascriptInterface
         public void startOverlay() {
             try {
-                // نتحققو من الإذن
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (!Settings.canDrawOverlays(MainActivity.this)) {
-                        // نطلب الإذن
                         Intent intent = new Intent(
                             Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                             Uri.parse("package:" + getPackageName())
@@ -49,13 +43,9 @@ public class MainActivity extends BridgeActivity {
                         return;
                     }
                 }
-
-                // نشغل الـ Service (بلا foreground باش ما يطلبش notification)
                 Intent serviceIntent = new Intent(MainActivity.this, OverlayService.class);
                 startService(serviceIntent);
-
             } catch (Exception e) {
-                // نتجاهلو الخطأ باش ما يطيحش التطبيق
                 e.printStackTrace();
             }
         }
@@ -76,6 +66,16 @@ public class MainActivity extends BridgeActivity {
                 return Settings.canDrawOverlays(MainActivity.this);
             }
             return true;
+        }
+
+        @JavascriptInterface
+        public void setTouchable(final boolean touchable) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    OverlayService.setTouchable(touchable);
+                }
+            });
         }
     }
 }
