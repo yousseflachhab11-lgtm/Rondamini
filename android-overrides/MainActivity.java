@@ -68,14 +68,23 @@ public class MainActivity extends BridgeActivity {
             return true;
         }
 
+        // ⚡ دالة setTouchable — كترجع باش الـ JavaScript ما يطيحش
         @JavascriptInterface
         public void setTouchable(final boolean touchable) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    OverlayService.setTouchable(touchable);
-                }
-            });
+            try {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            OverlayService.setTouchable(touchable);
+                        } catch (Throwable t) {
+                            // نتجاهلو باش ما يطيحش التطبيق
+                        }
+                    }
+                });
+            } catch (Throwable t) {
+                // نتجاهلو
+            }
         }
     }
 }
