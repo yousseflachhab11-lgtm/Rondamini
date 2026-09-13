@@ -39,26 +39,23 @@ jobs:
 
       - name: Copy transparent overrides
         run: |
-          echo "📋 Copying transparent override files..."
+          echo "📋 Copying override files..."
           
           # styles.xml
           cp android-overrides/styles.xml android/app/src/main/res/values/styles.xml
-          echo "✅ styles.xml copied"
+          echo "✅ styles.xml"
           
-          # MainActivity.java
+          # Java files
           mkdir -p android/app/src/main/java/com/ronda/mini
           cp android-overrides/MainActivity.java android/app/src/main/java/com/ronda/mini/MainActivity.java
-          echo "✅ MainActivity.java copied"
+          echo "✅ MainActivity.java"
           
-          # AndroidManifest.xml
+          cp android-overrides/OverlayService.java android/app/src/main/java/com/ronda/mini/OverlayService.java
+          echo "✅ OverlayService.java"
+          
+          # Manifest
           cp android-overrides/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
-          echo "✅ AndroidManifest.xml copied"
-          
-          # تأكد من المسارات
-          echo "📁 Files in place:"
-          ls -la android/app/src/main/res/values/styles.xml
-          ls -la android/app/src/main/java/com/ronda/mini/MainActivity.java
-          ls -la android/app/src/main/AndroidManifest.xml
+          echo "✅ AndroidManifest.xml"
 
       - name: Grant execute permission for gradlew
         run: chmod +x android/gradlew
