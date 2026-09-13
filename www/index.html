@@ -396,7 +396,7 @@ function handleTap(n){
   saveData();
   const remaining = Object.values(left).reduce((a,b)=>a+b,0);
   if(remaining === 0){
-    playSound('milestone'); vibrate([150,100,150,100,300]); triggerZeroFlash();
+    playSound('milestone'); vibrate([150,100,150,100,300]);
   } else if(remaining === 40 || remaining === 24 || remaining === 12){
     playSound('milestone'); vibrate([100,50,100,50,200]); triggerScreenFlash();
   } else if(willBeDepleted){
