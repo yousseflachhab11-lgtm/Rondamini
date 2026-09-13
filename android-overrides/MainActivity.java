@@ -23,7 +23,7 @@ public class MainActivity extends BridgeActivity {
             getBridge().getWebView().setLayerType(
                 android.view.View.LAYER_TYPE_HARDWARE, null
             );
-            
+
             // ⚡ نضيفو JavaScript Interface
             getBridge().getWebView().addJavascriptInterface(
                 new OverlayBridge(), "AndroidOverlay"
@@ -33,35 +33,41 @@ public class MainActivity extends BridgeActivity {
 
     // ⚡ هاد الكلاس كيسمح للـ HTML يتواصل مع Java
     public class OverlayBridge {
-        
+
         @JavascriptInterface
         public void startOverlay() {
-            // نتحققو من الإذن
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (!Settings.canDrawOverlays(MainActivity.this)) {
-                    // نطلب الإذن
-                    Intent intent = new Intent(
-                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:" + getPackageName())
-                    );
-                    startActivity(intent);
-                    return;
+            try {
+                // نتحققو من الإذن
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (!Settings.canDrawOverlays(MainActivity.this)) {
+                        // نطلب الإذن
+                        Intent intent = new Intent(
+                            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                            Uri.parse("package:" + getPackageName())
+                        );
+                        startActivity(intent);
+                        return;
+                    }
                 }
-            }
-            
-            // نشغل الـ Service
-            Intent serviceIntent = new Intent(MainActivity.this, OverlayService.class);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(serviceIntent);
-            } else {
+
+                // نشغل الـ Service (بلا foreground باش ما يطلبش notification)
+                Intent serviceIntent = new Intent(MainActivity.this, OverlayService.class);
                 startService(serviceIntent);
+
+            } catch (Exception e) {
+                // نتجاهلو الخطأ باش ما يطيحش التطبيق
+                e.printStackTrace();
             }
         }
 
         @JavascriptInterface
         public void stopOverlay() {
-            Intent serviceIntent = new Intent(MainActivity.this, OverlayService.class);
-            stopService(serviceIntent);
+            try {
+                Intent serviceIntent = new Intent(MainActivity.this, OverlayService.class);
+                stopService(serviceIntent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @JavascriptInterface
