@@ -26,29 +26,39 @@ jobs:
           java-version: '17'
 
       - name: Install dependencies
-        run: |
-          npm install
+        run: npm install
 
       - name: Install Capacitor CLI
-        run: |
-          npm install -g @capacitor/cli
+        run: npm install -g @capacitor/cli
 
       - name: Add Android platform
-        run: |
-          npx cap add android
-          npx cap sync android
+        run: npx cap add android
 
-      - name: Make WebView transparent
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      - name: Copy transparent overrides
         run: |
-          FILE="android/app/src/main/res/values/styles.xml"
-          if [ -f "$FILE" ]; then
-            sed -i 's|<item name="android:windowBackground">.*</item>|<item name="android:windowBackground">@android:color/transparent</item>|g' "$FILE" || true
-            sed -i 's|<item name="android:background">.*</item>|<item name="android:background">@android:color/transparent</item>|g' "$FILE" || true
-          fi
-          FILE2="android/app/src/main/java/com/ronda/mini/MainActivity.java"
-          if [ -f "$FILE2" ]; then
-            sed -i 's|super.onCreate(savedInstanceState);|super.onCreate(savedInstanceState);\n        getWindow().setBackgroundDrawableResource(android.R.color.transparent);\n        getBridge().getWebView().setBackgroundColor(android.graphics.Color.TRANSPARENT);|' "$FILE2" || true
-          fi
+          echo "📋 Copying transparent override files..."
+          
+          # styles.xml
+          cp android-overrides/styles.xml android/app/src/main/res/values/styles.xml
+          echo "✅ styles.xml copied"
+          
+          # MainActivity.java
+          mkdir -p android/app/src/main/java/com/ronda/mini
+          cp android-overrides/MainActivity.java android/app/src/main/java/com/ronda/mini/MainActivity.java
+          echo "✅ MainActivity.java copied"
+          
+          # AndroidManifest.xml
+          cp android-overrides/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
+          echo "✅ AndroidManifest.xml copied"
+          
+          # تأكد من المسارات
+          echo "📁 Files in place:"
+          ls -la android/app/src/main/res/values/styles.xml
+          ls -la android/app/src/main/java/com/ronda/mini/MainActivity.java
+          ls -la android/app/src/main/AndroidManifest.xml
 
       - name: Grant execute permission for gradlew
         run: chmod +x android/gradlew
