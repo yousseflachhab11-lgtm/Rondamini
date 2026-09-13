@@ -33,7 +33,6 @@ html,body{
   --rem-color:#fff;
 }
 
-/* ⚡ النافذة الزجاجية */
 .glass-window{
   position:fixed;
   top:0;left:0;
@@ -141,9 +140,9 @@ html,body{
 }
 .glass-minus{top:-14px;left:-14px;background:rgba(230,59,59,.95)}
 .glass-plus{top:-14px;right:-14px;background:rgba(46,204,85,.95)}
+.glass-overlay{bottom:-14px;left:50%;margin-left:-16px;background:rgba(59,130,246,.95);width:32px;height:32px;font-size:16px;padding:0}
 .glass-ctrl:active{transform:scale(.9)}
 
-/* ⚡ زر الإخفاء/الإظهار — ثابت فوق على الشاشة */
 .toggle-overlay-btn{
   position:fixed;
   top:10px;
@@ -173,12 +172,12 @@ html,body{
 </head>
 <body>
 
-<!-- ⚡ زر الإخفاء/الإظهار — ثابت، ما كيختفيش -->
 <button class="toggle-overlay-btn" id="toggleOverlayBtn" title="إخفاء/إظهار">⬇️</button>
 
 <div class="glass-window" id="glassWindow">
   <button class="glass-ctrl glass-minus" id="glassMinus" title="تصغير">−</button>
   <button class="glass-ctrl glass-plus" id="glassPlus" title="تكبير">+</button>
+  <button class="glass-ctrl glass-overlay" id="glassOverlay" title="تفعيل Overlay" style="display:none;">🚀</button>
   <div class="glass-dropped" id="glassDropped">
     <span class="glass-pin">📌</span>
     <span class="glass-empty" id="glassEmpty">لا توجد</span>
@@ -206,6 +205,7 @@ const glassUndo    = document.getElementById('glassUndo');
 const glassReset   = document.getElementById('glassReset');
 const glassMinus   = document.getElementById('glassMinus');
 const glassPlus    = document.getElementById('glassPlus');
+const glassOverlay = document.getElementById('glassOverlay');
 const toggleBtn    = document.getElementById('toggleOverlayBtn');
 
 function saveData(){
@@ -384,6 +384,27 @@ glassMinus.onclick = (e) => {
 };
 
 /* ============================================================
+   ⚡ زر تفعيل الـ Overlay (🚀)
+   ============================================================ */
+(function(){
+  if(!glassOverlay) return;
+  if(typeof AndroidOverlay !== 'undefined'){
+    glassOverlay.style.display = 'flex';
+  } else {
+    glassOverlay.style.display = 'none';
+    return;
+  }
+  glassOverlay.onclick = (e) => {
+    e.stopPropagation();
+    try {
+      AndroidOverlay.startOverlay();
+    } catch(err){}
+    playSound('click');
+    vibrate(30);
+  };
+})();
+
+/* ============================================================
    ⚡ زر الإخفاء / الإظهار
    ============================================================ */
 let isHidden = false;
@@ -393,21 +414,16 @@ toggleBtn.onclick = (e) => {
   isHidden = !isHidden;
 
   if(isHidden){
-    // ⚡ نخبيو الـ Overlay كامل
     toggleBtn.textContent = '⬆️';
     toggleBtn.classList.add('hidden-mode');
 
-    // ⚡ نخبيو الـ WebView (من Java)
     if(typeof AndroidOverlay !== 'undefined' && AndroidOverlay.hideOverlay){
       try{ AndroidOverlay.hideOverlay(); }catch(err){}
     }
-
   } else {
-    // ⚡ نرجعو الـ Overlay
     toggleBtn.textContent = '⬇️';
     toggleBtn.classList.remove('hidden-mode');
 
-    // ⚡ نرجعو الـ WebView (من Java)
     if(typeof AndroidOverlay !== 'undefined' && AndroidOverlay.showOverlay){
       try{ AndroidOverlay.showOverlay(); }catch(err){}
     }
