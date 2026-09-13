@@ -36,9 +36,7 @@ html,body{
 .glass-window{
   position:fixed;
   top:0;left:0;
-  width:100%;
-  height:100%;
-  box-sizing:border-box;
+  width:320px;
   background:var(--glass-bg);
   backdrop-filter:blur(14px) saturate(150%);
   -webkit-backdrop-filter:blur(14px) saturate(150%);
@@ -52,8 +50,8 @@ html,body{
   transform:translate3d(0,0,0);
   backface-visibility:hidden;
   -webkit-backface-visibility:hidden;
-  overflow:hidden;
 }
+
 @media (orientation: landscape) {
   .glass-window { width: 260px; padding: 8px; }
   .glass-cell { font-size: 18px; }
@@ -341,10 +339,18 @@ glassReset.onclick = (e) => {
 let currentX = 0, currentY = 0;
 let currentScale = parseFloat(localStorage.getItem('ronda_mini_scale')) || 1;
 
-// ⚡ Rondacalcul كاملة ملاصقة للـ WebView
-// لا حاجة للتحكم فـ currentX/Y — Java كتحكم فالموقع
-currentX = 0;
-currentY = 0;
+(function(){
+  const saved = JSON.parse(localStorage.getItem('ronda_mini_pos_v4'));
+  if(saved && saved.xPct !== undefined){
+    currentX = (saved.xPct / 100) * window.innerWidth;
+    currentY = (saved.yPct / 100) * window.innerHeight;
+  } else {
+    currentX = Math.max(10, window.innerWidth - 340);
+    currentY = 60;
+  }
+  clampPosition();
+})();
+
 function clampPosition(){
   const w = glassWindow.offsetWidth * currentScale;
   const h = glassWindow.offsetHeight * currentScale;
@@ -384,7 +390,7 @@ glassMinus.onclick = (e) => {
    ============================================================ */
 (function(){
   if(!glassOverlay) return;
-
+  
   // فحص واش الـ Bridge موجود
   if(typeof AndroidOverlay !== 'undefined'){
     glassOverlay.style.display = 'flex';
@@ -392,7 +398,7 @@ glassMinus.onclick = (e) => {
     glassOverlay.style.display = 'none';
     return;
   }
-
+  
   glassOverlay.onclick = (e) => {
     e.stopPropagation();
     try {
