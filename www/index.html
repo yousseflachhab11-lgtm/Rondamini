@@ -33,7 +33,6 @@ html,body{
   --rem-color:#fff;
 }
 
-/* ⚡ النافذة الزجاجية — بلا transition (سريعة) */
 .glass-window{
   position:fixed;
   top:0;left:0;
@@ -53,12 +52,10 @@ html,body{
   -webkit-backface-visibility:hidden;
 }
 
-/* ⚡ transition غير منين كتختفي/ترجع */
 .glass-window.hiding{
   transition:transform .3s ease, opacity .3s ease;
 }
 
-/* ⚡ الوضع المخفي */
 .glass-window.hidden-overlay{
   transform:translate3d(0, calc(100vh + 50px), 0) !important;
   opacity:0;
@@ -155,7 +152,6 @@ html,body{
 .glass-plus{top:-14px;right:-14px;background:rgba(46,204,85,.95)}
 .glass-ctrl:active{transform:scale(.9)}
 
-/* ⚡ زر الإخفاء — ثابت فوق على الشاشة */
 .toggle-overlay-btn{
   position:fixed;
   top:10px;
@@ -185,7 +181,7 @@ html,body{
 </head>
 <body>
 
-<button class="toggle-overlay-btn" id="toggleOverlayBtn" title="إخفاء/إظهار Rondacalcul">⬇️</button>
+<button class="toggle-overlay-btn" id="toggleOverlayBtn" title="إخفاء/إظهار">⬇️</button>
 
 <div class="glass-window" id="glassWindow">
   <button class="glass-ctrl glass-minus" id="glassMinus" title="تصغير">−</button>
@@ -394,7 +390,7 @@ glassMinus.onclick = (e) => {
   playSound('click'); vibrate(15);
 };
 
-/* ⚡ زر الإخفاء */
+/* ⚡ زر الإخفاء — كيتواصل مع AndroidOverlay */
 let isHidden = false;
 toggleBtn.onclick = (e) => {
   e.stopPropagation();
@@ -406,9 +402,9 @@ toggleBtn.onclick = (e) => {
     toggleBtn.textContent = '⬆️';
     toggleBtn.classList.add('hidden-mode');
 
-if(typeof AndroidOverlayService !== 'undefined' && AndroidOverlayService.setTouchable){
-  try{ AndroidOverlayService.setTouchable(false); }catch(err){}
-}
+    if(typeof AndroidOverlay !== 'undefined' && AndroidOverlay.setTouchable){
+      try{ AndroidOverlay.setTouchable(false); }catch(err){}
+    }
 
     setTimeout(() => {
       glassWindow.classList.remove('hiding');
@@ -420,9 +416,9 @@ if(typeof AndroidOverlayService !== 'undefined' && AndroidOverlayService.setTouc
     toggleBtn.textContent = '⬇️';
     toggleBtn.classList.remove('hidden-mode');
 
-if(typeof AndroidOverlayService !== 'undefined' && AndroidOverlayService.setTouchable){
-  try{ AndroidOverlayService.setTouchable(true); }catch(err){}
-}
+    if(typeof AndroidOverlay !== 'undefined' && AndroidOverlay.setTouchable){
+      try{ AndroidOverlay.setTouchable(true); }catch(err){}
+    }
 
     setTimeout(() => {
       glassWindow.classList.remove('hiding');
