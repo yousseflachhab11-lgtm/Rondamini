@@ -11,7 +11,6 @@
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 
-/* ⚡ المهم: منع اللمس على الخلفية */
 html,body{
   margin:0;padding:0;
   width:100%;height:100%;
@@ -34,130 +33,65 @@ html,body{
   --rem-color:#fff;
 }
 
-/* ================= النافذة ================= */
 .glass-window{
   position:fixed;
-  top:0;
-  left:0;
+  top:0;left:0;
   width:320px;
   background:var(--glass-bg);
   backdrop-filter:blur(14px) saturate(150%);
   -webkit-backdrop-filter:blur(14px) saturate(150%);
   border:1px solid var(--glass-border);
   border-radius:16px;
-  box-shadow:
-    0 8px 32px rgba(0,0,0,.45),
-    inset 0 1px 0 rgba(255,255,255,.2);
+  box-shadow:0 8px 32px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.2);
   z-index:99999;
   padding:10px;
-  
   pointer-events:auto !important;
-  
   will-change:transform;
   transform:translate3d(0,0,0);
   backface-visibility:hidden;
   -webkit-backface-visibility:hidden;
-  
-  transition: box-shadow .2s;
 }
 
-/* ================= الوضع الأفقي ================= */
 @media (orientation: landscape) {
-  .glass-window {
-    width: 260px;
-    padding: 8px;
-  }
-  .glass-cell {
-    font-size: 18px;
-  }
-  .glass-counter {
-    font-size: 18px;
-    height: 34px;
-    min-width: 48px;
-  }
-  .glass-action {
-    height: 34px;
-    font-size: 14px;
-  }
-  .glass-dropped {
-    min-height: 28px;
-  }
-  .glass-chip {
-    font-size: 13px;
-    padding: 3px 6px;
-  }
+  .glass-window { width: 260px; padding: 8px; }
+  .glass-cell { font-size: 18px; }
+  .glass-counter { font-size: 18px; height: 34px; min-width: 48px; }
+  .glass-action { height: 34px; font-size: 14px; }
+  .glass-dropped { min-height: 28px; }
+  .glass-chip { font-size: 13px; padding: 3px 6px; }
 }
 
-/* ================= شريط آخر 4 أوراق ================= */
 .glass-dropped{
-  min-height:34px;
-  display:flex;
-  align-items:center;
-  gap:5px;
-  padding:4px 6px;
-  margin-bottom:8px;
-  background:rgba(255,255,255,.08);
-  border:1px solid var(--glass-border);
-  border-radius:10px;
-  overflow-x:auto;
-  scrollbar-width:none;
+  min-height:34px;display:flex;align-items:center;gap:5px;
+  padding:4px 6px;margin-bottom:8px;background:rgba(255,255,255,.08);
+  border:1px solid var(--glass-border);border-radius:10px;
+  overflow-x:auto;scrollbar-width:none;
 }
 .glass-dropped::-webkit-scrollbar{display:none}
 .glass-pin{font-size:11px;opacity:.8}
 .glass-chip{
-  background:var(--glass-btn);
-  border:1px solid var(--glass-btn-border);
-  padding:4px 8px;
-  border-radius:8px;
-  font-weight:900;
-  font-size:15px;
-  color:var(--text-main);
-  flex-shrink:0;
+  background:var(--glass-btn);border:1px solid var(--glass-btn-border);
+  padding:4px 8px;border-radius:8px;font-weight:900;font-size:15px;
+  color:var(--text-main);flex-shrink:0;
 }
 .glass-chip.latest{
-  background:rgba(255,215,0,.45);
-  border:2px solid #ffd700;
-  color:#ffd700;
-  box-shadow:0 0 10px rgba(255,215,0,.7);
-  font-size:14px;
-  padding:3px 10px;
+  background:rgba(255,215,0,.45);border:2px solid #ffd700;color:#ffd700;
+  box-shadow:0 0 10px rgba(255,215,0,.7);font-size:14px;padding:3px 10px;
 }
-.glass-empty{
-  font-size:11px;
-  color:var(--text-main);
-  opacity:.65;
-  padding:0 4px;
-}
+.glass-empty{font-size:11px;color:var(--text-main);opacity:.65;padding:0 4px}
 
-/* ================= شبكة الأرقام ================= */
 .glass-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:5px;
-  margin-bottom:8px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:8px;
 }
 
 .glass-cell{
-  position:relative;
-  aspect-ratio:1/1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:var(--glass-btn);
-  border:1px solid var(--glass-btn-border);
-  border-radius:10px;
-  color:var(--text-main);
-  font-weight:900;
-  font-size:22px;
-  letter-spacing:-0.5px;
-  cursor:pointer;
-  transition:transform .08s, background .2s;
-  -webkit-user-select:none;
-  user-select:none;
-  pointer-events:auto;
+  position:relative;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
+  background:var(--glass-btn);border:1px solid var(--glass-btn-border);border-radius:10px;
+  color:var(--text-main);font-weight:900;font-size:22px;letter-spacing:-0.5px;
+  cursor:pointer;transition:transform .08s,background .2s;
+  -webkit-user-select:none;user-select:none;pointer-events:auto;
 }
 .glass-cell:active{transform:scale(.93)}
-
 .glass-cell.c3{background:rgba(46,204,85,.35);border-color:rgba(46,204,85,.75)}
 .glass-cell.c2{background:rgba(255,215,0,.3);border-color:rgba(255,215,0,.75);color:#ffd700}
 .glass-cell.c1{background:rgba(230,59,59,.4);border-color:#e63b3b;color:#fff}
@@ -170,103 +104,56 @@ html,body{
 .glass-cell.danger-pulse{animation:glassDangerPulse 1.2s infinite}
 
 .glass-rem{
-  position:absolute;
-  bottom:3px;
-  left:3px;
-  min-width:15px;
-  height:15px;
-  padding:0 3px;
-  border-radius:5px;
-  background:var(--rem-bg);
-  color:var(--rem-color);
-  font-size:9px;
-  font-weight:bold;
-  line-height:15px;
-  text-align:center;
-  pointer-events:none;
+  position:absolute;bottom:3px;left:3px;min-width:15px;height:15px;
+  padding:0 3px;border-radius:5px;background:var(--rem-bg);color:var(--rem-color);
+  font-size:9px;font-weight:bold;line-height:15px;text-align:center;pointer-events:none;
 }
 .glass-cell.c3 .glass-rem{background:rgba(46,204,85,.9);color:#0a2410}
 .glass-cell.c2 .glass-rem{background:rgba(255,215,0,.9);color:#3a2c00}
 .glass-cell.c1 .glass-rem{background:rgba(230,59,59,.95);color:#fff}
 .glass-cell.c0 .glass-rem{background:rgba(80,20,20,.8);color:#c07070}
 
-/* ================= الفوتر ================= */
-.glass-footer{
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-
+.glass-footer{display:flex;align-items:center;gap:6px}
 .glass-counter{
-  flex:0 0 auto;
-  min-width:56px;
-  height:40px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(0,0,0,.5);
-  border:1px solid var(--glass-border);
-  border-radius:10px;
-  font-size:22px;
-  font-weight:900;
-  color:#ffd700;
-  letter-spacing:-1px;
+  flex:0 0 auto;min-width:56px;height:40px;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.5);border:1px solid var(--glass-border);border-radius:10px;
+  font-size:22px;font-weight:900;color:#ffd700;letter-spacing:-1px;
 }
 .glass-counter.low{color:#ff4d4d;text-shadow:0 0 8px rgba(255,77,77,.7)}
 .glass-counter.done{color:#00e676;text-shadow:0 0 8px rgba(0,230,118,.8)}
 
 .glass-action{
-  flex:1;
-  height:40px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:var(--glass-btn);
-  border:1px solid var(--glass-btn-border);
-  border-radius:10px;
-  color:var(--text-main);
-  font-size:16px;
-  font-weight:900;
-  cursor:pointer;
-  transition:transform .08s, background .2s;
-  pointer-events:auto;
+  flex:1;height:40px;display:flex;align-items:center;justify-content:center;
+  background:var(--glass-btn);border:1px solid var(--glass-btn-border);border-radius:10px;
+  color:var(--text-main);font-size:16px;font-weight:900;cursor:pointer;
+  transition:transform .08s,background .2s;pointer-events:auto;
 }
 .glass-action:active{transform:scale(.94)}
 .glass-undo{flex:2}
 .glass-reset{background:rgba(255,255,255,.2)}
-.glass-reset:active{background:rgba(255,255,255,.32)}
 
-/* ================= أزرار التحكم ================= */
 .glass-ctrl{
-  position:absolute;
-  width:32px;
-  height:32px;
-  border-radius:50%;
-  border:2px solid #fff;
-  color:#fff;
-  font-size:18px;
-  font-weight:900;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 4px 12px rgba(0,0,0,.4);
-  z-index:10;
-  pointer-events:auto;
+  position:absolute;width:32px;height:32px;border-radius:50%;
+  border:2px solid #fff;color:#fff;font-size:18px;font-weight:900;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.4);z-index:10;pointer-events:auto;
 }
-.glass-minus{
-  top:-14px;
-  left:-14px;
-  background:rgba(230,59,59,.95);
-}
-.glass-plus{
-  top:-14px;
-  right:-14px;
-  background:rgba(46,204,85,.95);
-}
+.glass-minus{top:-14px;left:-14px;background:rgba(230,59,59,.95)}
+.glass-plus{top:-14px;right:-14px;background:rgba(46,204,85,.95)}
 .glass-ctrl:active{transform:scale(.9)}
 
-/* ================= فلاش ================= */
+/* ⚡ زر تفعيل الـ Overlay */
+.glass-overlay{
+  bottom:-14px;
+  left:50%;
+  margin-left:-16px;
+  background:rgba(59,130,246,.95);
+  width:32px;
+  height:32px;
+  font-size:14px;
+  padding:0;
+}
+
 @keyframes glassScreenFlash{
   0%{filter:brightness(1)}
   30%{filter:brightness(1.8) hue-rotate(90deg)}
@@ -281,6 +168,7 @@ html,body{
 <div class="glass-window" id="glassWindow">
   <button class="glass-ctrl glass-minus" id="glassMinus" title="تصغير">−</button>
   <button class="glass-ctrl glass-plus" id="glassPlus" title="تكبير">+</button>
+  <button class="glass-ctrl glass-overlay" id="glassOverlay" title="تفعيل Overlay" style="display:none;">🚀</button>
   <div class="glass-dropped" id="glassDropped">
     <span class="glass-pin">📌</span>
     <span class="glass-empty" id="glassEmpty">لا توجد</span>
@@ -294,10 +182,6 @@ html,body{
 </div>
 
 <script>
-/* ============================================================
-   Rondacalcul v4 - Floating فوق Ronda
-   ============================================================ */
-
 const allNums = [1,2,3,4,5,6,7,10,11,12];
 
 let left = JSON.parse(localStorage.getItem('ronda_mini_left')) || Object.fromEntries(allNums.map(n=>[n,4]));
@@ -312,13 +196,13 @@ const glassUndo    = document.getElementById('glassUndo');
 const glassReset   = document.getElementById('glassReset');
 const glassMinus   = document.getElementById('glassMinus');
 const glassPlus    = document.getElementById('glassPlus');
+const glassOverlay = document.getElementById('glassOverlay');
 
 function saveData(){
   localStorage.setItem('ronda_mini_left', JSON.stringify(left));
   localStorage.setItem('ronda_mini_history', JSON.stringify(history));
 }
 
-/* ================= الصوت ================= */
 let audioCtx = null;
 function initAudio(){
   try{
@@ -367,7 +251,6 @@ function triggerScreenFlash(){
   glassWindow.classList.add('screen-flash');
 }
 
-/* ================= الرسم ================= */
 function renderDropped(){
   const lastFour = history.slice(-4);
   if(lastFour.length === 0){
@@ -451,16 +334,14 @@ glassReset.onclick = (e) => {
 };
 
 /* ============================================================
-   Scale + Position + Rotation
+   Scale + Position
    ============================================================ */
 let currentX = 0, currentY = 0;
 let currentScale = parseFloat(localStorage.getItem('ronda_mini_scale')) || 1;
 
-// استرجاع الموضع (نسبة مئوية باش يخدم مع أي شاشة)
 (function(){
   const saved = JSON.parse(localStorage.getItem('ronda_mini_pos_v4'));
   if(saved && saved.xPct !== undefined){
-    // نستعملو نسبة مئوية
     currentX = (saved.xPct / 100) * window.innerWidth;
     currentY = (saved.yPct / 100) * window.innerHeight;
   } else {
@@ -486,27 +367,49 @@ function applyTransform(){
 applyTransform();
 
 /* ============================================================
-   التحكم فالحجم (+ و −)
+   التحكم فالحجم
    ============================================================ */
 glassPlus.onclick = (e) => {
   e.stopPropagation();
   currentScale = Math.min(2.5, currentScale + 0.1);
   localStorage.setItem('ronda_mini_scale', currentScale);
-  clampPosition();
-  applyTransform();
-  playSound('click');
-  vibrate(15);
+  clampPosition(); applyTransform();
+  playSound('click'); vibrate(15);
 };
 
 glassMinus.onclick = (e) => {
   e.stopPropagation();
   currentScale = Math.max(0.4, currentScale - 0.1);
   localStorage.setItem('ronda_mini_scale', currentScale);
-  clampPosition();
-  applyTransform();
-  playSound('click');
-  vibrate(15);
+  clampPosition(); applyTransform();
+  playSound('click'); vibrate(15);
 };
+
+/* ============================================================
+   زر تفعيل الـ Overlay
+   ============================================================ */
+(function(){
+  if(!glassOverlay) return;
+  
+  // فحص واش الـ Bridge موجود
+  if(typeof AndroidOverlay !== 'undefined'){
+    glassOverlay.style.display = 'flex';
+  } else {
+    glassOverlay.style.display = 'none';
+    return;
+  }
+  
+  glassOverlay.onclick = (e) => {
+    e.stopPropagation();
+    try {
+      AndroidOverlay.startOverlay();
+    } catch(err){
+      // تجاهل
+    }
+    playSound('click');
+    vibrate(30);
+  };
+})();
 
 /* ============================================================
    السحب
@@ -528,20 +431,15 @@ function moveDrag(clientX, clientY){
   if(!isDragging) return;
   const dx = (clientX - dragStartX) / currentScale;
   const dy = (clientY - dragStartY) / currentScale;
-  
   let x = posStartX + dx;
   let y = posStartY + dy;
-  
   const w = glassWindow.offsetWidth * currentScale;
   const h = glassWindow.offsetHeight * currentScale;
   const maxX = window.innerWidth - w;
   const maxY = window.innerHeight - h;
   x = Math.max(0, Math.min(maxX, x));
   y = Math.max(0, Math.min(maxY, y));
-  
-  currentX = x;
-  currentY = y;
-  
+  currentX = x; currentY = y;
   if(rafId) cancelAnimationFrame(rafId);
   rafId = requestAnimationFrame(applyTransform);
 }
@@ -549,16 +447,11 @@ function moveDrag(clientX, clientY){
 function endDrag(){
   if(!isDragging) return;
   isDragging = false;
-  // نحفظ كنسبة مئوية باش يخدم مع الدوران
   const xPct = (currentX / window.innerWidth) * 100;
   const yPct = (currentY / window.innerHeight) * 100;
-  localStorage.setItem('ronda_mini_pos_v4', JSON.stringify({
-    xPct: xPct,
-    yPct: yPct
-  }));
+  localStorage.setItem('ronda_mini_pos_v4', JSON.stringify({xPct, yPct}));
 }
 
-/* === Touch === */
 glassWindow.addEventListener('touchstart', (e) => {
   if(e.target.closest('button, .glass-cell')) return;
   const t = e.touches[0];
@@ -575,7 +468,6 @@ glassWindow.addEventListener('touchmove', (e) => {
 glassWindow.addEventListener('touchend', endDrag);
 glassWindow.addEventListener('touchcancel', endDrag);
 
-/* === Mouse === */
 glassWindow.addEventListener('mousedown', (e) => {
   if(e.target.closest('button, .glass-cell')) return;
   startDrag(e.clientX, e.clientY);
@@ -590,12 +482,10 @@ document.addEventListener('mousemove', (e) => {
 document.addEventListener('mouseup', endDrag);
 
 /* ============================================================
-   الدوران (Rotation)
+   الدوران
    ============================================================ */
 function handleRotation(){
-  // نستنى باش الشاشة تكمل الدوران
   setTimeout(() => {
-    // نعاود نحسب الموضع من النسبة المئوية
     const saved = JSON.parse(localStorage.getItem('ronda_mini_pos_v4'));
     if(saved && saved.xPct !== undefined){
       currentX = (saved.xPct / 100) * window.innerWidth;
@@ -609,9 +499,6 @@ function handleRotation(){
 window.addEventListener('resize', handleRotation);
 window.addEventListener('orientationchange', handleRotation);
 
-/* ============================================================
-   تشغيل
-   ============================================================ */
 render();
 </script>
 </body>
