@@ -68,12 +68,24 @@ public class MainActivity extends BridgeActivity {
             return true;
         }
 
-        // ⚡ ⚡ ⚡ نرسلو Intent للـ Service — بلا static method
+        // ⚡ نخبيو الـ Overlay
         @JavascriptInterface
-        public void setTouchable(final boolean touchable) {
+        public void hideOverlay() {
             try {
                 Intent intent = new Intent(MainActivity.this, OverlayService.class);
-                intent.setAction(touchable ? "TOUCHABLE_ON" : "TOUCHABLE_OFF");
+                intent.setAction("HIDE_OVERLAY");
+                startService(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // ⚡ نرجعو الـ Overlay
+        @JavascriptInterface
+        public void showOverlay() {
+            try {
+                Intent intent = new Intent(MainActivity.this, OverlayService.class);
+                intent.setAction("SHOW_OVERLAY");
                 startService(intent);
             } catch (Exception e) {
                 e.printStackTrace();
