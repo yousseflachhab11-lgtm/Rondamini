@@ -21,9 +21,6 @@ public class OverlayService extends Service {
     private WebView webView;
     private WindowManager.LayoutParams params;
 
-    // ⚡ ⚡ ⚡ static reference — باش نتحكمو من MainActivity
-    private static OverlayService instance;
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -37,35 +34,44 @@ public class OverlayService extends Service {
         );
     }
 
-    // ⚡ ⚡ ⚡ دالة static للتحكم — يستدعيها MainActivity
-    public static void updateTouchable(boolean touchable) {
-        if (instance == null) return;
-        if (instance.params == null) return;
-        if (instance.windowManager == null) return;
-        if (instance.webView == null) return;
+    // ⚡ ⚡ ⚡ الدالة الداخلية (private) — كتخدم على instance
+    private void updateTouchable(boolean touchable) {
+        if (params == null || windowManager == null || webView == null) {
+            return;
+        }
 
         if (touchable) {
-            instance.params.flags &= ~WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+            params.flags &= ~WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
         } else {
-            instance.params.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+            params.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
         }
 
         try {
-            instance.windowManager.updateViewLayout(instance.webView, instance.params);
+            windowManager.updateViewLayout(webView, params);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    // ⚡ ⚡ ⚡ نستقبلو الأوامر من MainActivity
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null && intent.getAction() != null) {
+            String action = intent.getAction();
+            if ("TOUCHABLE_OFF".equals(action)) {
+                updateTouchable(false);
+            } else if ("TOUCHABLE_ON".equals(action)) {
+                updateTouchable(true);
+            }
+        }
+        return START_STICKY;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
-        instance = this;
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-
-        DisplayMetrics metrics = new DisplayMetrics();
-        windowManager.getDefaultDisplay().getMetrics(metrics);
 
         int widthPx = dpToPx(300);
         int heightPx = dpToPx(370);
@@ -101,7 +107,6 @@ public class OverlayService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        instance = null;
         if (webView != null && windowManager != null) {
             try {
                 windowManager.removeView(webView);
