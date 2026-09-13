@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -39,26 +40,30 @@ public class OverlayService extends Service {
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        // ⚡ الحجم بالـ dp (كيتأقلم مع كل الشاشات)
-        int widthPx = dpToPx(300);   // ~300dp
-        int heightPx = dpToPx(370);  // ~370dp
+        // ⚡ الحجم بالـ dp
+        int widthPx = dpToPx(300);
+        int heightPx = dpToPx(370);
 
-        // ⚡ الإعدادات المهمة:
-        // - FLAG_NOT_FOCUSABLE: ما كياخدش focus (اللعبة تبقى شغالة)
-        // - FLAG_NOT_TOUCH_MODAL: اللمس برا الـ WebView كيدوز للتطبيقات الأخرى
-        // - FLAG_HARDWARE_ACCELERATED: أداء أحسن
+        // ⚡ نحسبو عرض الشاشة
+        DisplayMetrics metrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+        int screenWidth = metrics.widthPixels;
+
+        // ⚡ الإعدادات
         params = new WindowManager.LayoutParams(
             widthPx,
             heightPx,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL  // ← هادي المفتاح
+                | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                 | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
                 | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             PixelFormat.TRANSLUCENT
         );
         params.gravity = Gravity.TOP | Gravity.START;
-        params.x = dpToPx(10);
+
+        // ⚡ النافذة على اليمين (10dp من الحافة اليمنى)
+        params.x = screenWidth - widthPx - dpToPx(10);
         params.y = dpToPx(50);
 
         // الـ WebView
