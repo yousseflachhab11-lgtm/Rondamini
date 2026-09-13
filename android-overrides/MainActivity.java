@@ -68,7 +68,6 @@ public class MainActivity extends BridgeActivity {
             return true;
         }
 
-        // ⚡ دالة setTouchable — كترجع باش الـ JavaScript ما يطيحش
         @JavascriptInterface
         public void setTouchable(final boolean touchable) {
             try {
@@ -76,14 +75,14 @@ public class MainActivity extends BridgeActivity {
                     @Override
                     public void run() {
                         try {
-                            OverlayService.setTouchable(touchable);
+                            OverlayService.updateTouchable(touchable);
                         } catch (Throwable t) {
-                            // نتجاهلو باش ما يطيحش التطبيق
+                            t.printStackTrace();
                         }
                     }
                 });
             } catch (Throwable t) {
-                // نتجاهلو
+                t.printStackTrace();
             }
         }
     }
