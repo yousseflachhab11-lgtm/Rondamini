@@ -11,6 +11,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import androidx.annotation.Nullable;
@@ -19,8 +20,6 @@ public class OverlayService extends Service {
     private WindowManager windowManager;
     private WebView webView;
     private WindowManager.LayoutParams params;
-    
-    private static OverlayService instance;
 
     @Nullable
     @Override
@@ -35,19 +34,20 @@ public class OverlayService extends Service {
         );
     }
 
-    public static void setTouchable(boolean touchable) {
-        if (instance == null || instance.params == null || instance.windowManager == null || instance.webView == null) {
+    // ⚡ ⚡ ⚡ دالة instance (ماشي static) — كتخدم على هاد الـ Service
+    public void setTouchableInternal(boolean touchable) {
+        if (params == null || windowManager == null || webView == null) {
             return;
         }
         
         if (touchable) {
-            instance.params.flags &= ~WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+            params.flags &= ~WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
         } else {
-            instance.params.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+            params.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
         }
         
         try {
-            instance.windowManager.updateViewLayout(instance.webView, instance.params);
+            windowManager.updateViewLayout(webView, params);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -56,7 +56,6 @@ public class OverlayService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        instance = this;
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
@@ -89,6 +88,9 @@ public class OverlayService extends Service {
         webView.setHorizontalScrollBarEnabled(false);
         webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
+        // ⚡ ⚡ ⚡ هنا المفتاح — نخليو JavaScript Interface داخل الـ Service
+        webView.addJavascriptInterface(new OverlayServiceBridge(), "AndroidOverlayService");
+
         webView.loadUrl("file:///android_asset/public/index.html");
 
         windowManager.addView(webView, params);
@@ -97,13 +99,26 @@ public class OverlayService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        instance = null;
         if (webView != null && windowManager != null) {
             try {
                 windowManager.removeView(webView);
             } catch (Exception e) {
                 // تجاهل
             }
+        }
+    }
+
+    // ⚡ ⚡ ⚡ الـ Bridge ديال الـ Overlay
+    public class OverlayServiceBridge {
+        @JavascriptInterface
+        public void setTouchable(final boolean touchable) {
+            // نستعملو handler باش نضمنو أننا فـ UI thread
+            new android.os.Handler(android.os.Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    setTouchableInternal(touchable);
+                }
+            });
         }
     }
 }
