@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Ronda Mini</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;touch-action:manipulation;background:transparent !important}
+
+:root{
+  --text-main:#fff;
+  --glass-bg:rgba(20,20,25,.55);
+  --glass-border:rgba(255,255,255,.25);
+  --glass-btn:rgba(255,255,255,.12);
+  --glass-btn-border:rgba(255,255,255,.22);
+  --rem-bg:rgba(0,0,0,.55);
+  --rem-color:#fff;
+}
+
+.glass-window{
+  position:fixed;top:60px;right:12px;width:min(320px,92vw);
+  background:var(--glass-bg);
+  backdrop-filter:blur(14px) saturate(150%);
+  -webkit-backdrop-filter:blur(14px) saturate(150%);
+  border:1px solid var(--glass-border);border-radius:16px;
+  box-shadow:0 8px 32px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.2);
+  z-index:99999;padding:10px;user-select:none;transition:box-shadow .2s;
+}
+.glass-window.dragging{box-shadow:0 16px 48px rgba(0,0,0,.65);cursor:grabbing}
+
+.glass-dropped{
+  min-height:34px;display:flex;align-items:center;gap:5px;
+  padding:4px 6px;margin-bottom:8px;background:rgba(255,255,255,.08);
+  border:1px solid var(--glass-border);border-radius:10px;
+  overflow-x:auto;scrollbar-width:none;
+}
+.glass-dropped::-webkit-scrollbar{display:none}
+.glass-pin{font-size:11px;opacity:.8}
+.glass-chip{
+  background:var(--glass-btn);border:1px solid var(--glass-btn-border);
+  padding:4px 8px;border-radius:8px;font-weight:900;font-size:15px;
+  color:var(--text-main);flex-shrink:0;
+}
+.glass-chip.latest{
+  background:rgba(255,215,0,.45);border:2px solid #ffd700;color:#ffd700;
+  box-shadow:0 0 10px rgba(255,215,0,.7);font-size:14px;padding:3px 10px;
+}
+.glass-empty{font-size:11px;color:var(--text-main);opacity:.65;padding:0 4px}
+
+.glass-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:8px}
+.glass-cell{
+  position:relative;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
+  background:var(--glass-btn);border:1px solid var(--glass-btn-border);border-radius:10px;
+  color:var(--text-main);font-weight:900;font-size:clamp(20px,6vw,26px);
+  letter-spacing:-0.5px;cursor:pointer;transition:transform .08s,background .2s;
+  -webkit-user-select:none;user-select:none;
+}
+.glass-cell:active{transform:scale(.93)}
+.glass-cell.c3{background:rgba(46,204,85,.35);border-color:rgba(46,204,85,.75)}
+.glass-cell.c2{background:rgba(255,215,0,.3);border-color:rgba(255,215,0,.75);color:#ffd700}
+.glass-cell.c1{background:rgba(230,59,59,.4);border-color:#e63b3b;color:#fff}
+.glass-cell.c0{opacity:.3;cursor:not-allowed}
+@keyframes glassDangerPulse{0%,100%{box-shadow:inset 0 0 0 rgba(230,59,59,0)}50%{box-shadow:inset 0 0 14px rgba(230,59,59,.9)}}
+.glass-cell.danger-pulse{animation:glassDangerPulse 1.2s infinite}
+.glass-rem{
+  position:absolute;bottom:3px;left:3px;min-width:15px;height:15px;padding:0 3px;
+  border-radius:5px;background:var(--rem-bg);color:var(--rem-color);
+  font-size:9px;font-weight:bold;line-height:15px;text-align:center;pointer-events:none;
+}
+.glass-cell.c3 .glass-rem{background:rgba(46,204,85,.9);color:#0a2410}
+.glass-cell.c2 .glass-rem{background:rgba(255,215,0,.9);color:#3a2c00}
+.glass-cell.c1 .glass-rem{background:rgba(230,59,59,.95);color:#fff}
+.glass-cell.c0 .glass-rem{background:rgba(80,20,20,.8);color:#c07070}
+
+.glass-footer{display:flex;align-items:center;gap:6px}
+.glass-counter{
+  flex:0 0 auto;min-width:56px;height:40px;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.5);border:1px solid var(--glass-border);border-radius:10px;
+  font-size:22px;font-weight:900;color:#ffd700;letter-spacing:-1px;
+}
+.glass-counter.low{color:#ff4d4d;text-shadow:0 0 8px rgba(255,77,77,.7)}
+.glass-counter.done{color:#00e676;text-shadow:0 0 8px rgba(0,230,118,.8)}
+.glass-action{
+  flex:1;height:40px;display:flex;align-items:center;justify-content:center;
+  background:var(--glass-btn);border:1px solid var(--glass-btn-border);border-radius:10px;
+  color:var(--text-main);font-size:16px;font-weight:900;cursor:pointer;
+  transition:transform .08s,background .2s;
+}
+.glass-action:active{transform:scale(.94)}
+.glass-undo{flex:2}
+.glass-reset{background:rgba(255,255,255,.2)}
+
+.glass-mini{
+  position:absolute;top:-12px;left:-12px;width:28px;height:28px;border-radius:50%;
+  background:rgba(230,59,59,.9);border:2px solid #fff;color:#fff;font-size:14px;font-weight:900;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.4);
+}
+.glass-mini:active{transform:scale(.9)}
+
+@keyframes glassFlash{0%{background:rgba(255,255,255,0)}30%{background:rgba(255,255,255,.85)}100%{background:rgba(255,255,255,0)}}
+.glass-flash-overlay{
+  position:fixed;inset:0;z-index:99998;pointer-events:none;
+  animation:glassFlash .9s ease-out forwards;display:flex;align-items:center;justify-content:center;
+}
+.glass-flash-text{font-size:26px;font-weight:900;color:#111;background:#fff;padding:10px 20px;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,.3)}
+</style>
+</head>
+<body>
+
+<div class="glass-window" id="glassWindow">
+  <button class="glass-mini" id="glassMini" title="تصغير">−</button>
+  <div class="glass-dropped" id="glassDropped">
+    <span class="glass-pin">📌</span>
+    <span class="glass-empty">لا توجد</span>
+  </div>
+  <div class="glass-grid" id="glassGrid"></div>
+  <div class="glass-footer">
+    <div class="glass-counter" id="glassCounter">40</div>
+    <button class="glass-action glass-undo" id="glassUndo">↩ تراجع</button>
+    <button class="glass-action glass-reset" id="glassReset">🔄</button>
+  </div>
+</div>
+
+<script>
+const allNums = [1,2,3,4,5,6,7,10,11,12];
+let left = JSON.parse(localStorage.getItem('ronda_mini_left')) || Object.fromEntries(allNums.map(n=>[n,4]));
+allNums.forEach(n=>{ if(left[n]===undefined) left[n]=4; });
+let history = JSON.parse(localStorage.getItem('ronda_mini_history')) || [];
+
+const glassWindow  = document.getElementById('glassWindow');
+const glassGrid    = document.getElementById('glassGrid');
+const glassDropped = document.getElementById('glassDropped');
+const glassCounter = document.getElementById('glassCounter');
+const glassUndo    = document.getElementById('glassUndo');
+const glassReset   = document.getElementById('glassReset');
+const glassMini    = document.getElementById('glassMini');
+
+function saveData(){
+  localStorage.setItem('ronda_mini_left', JSON.stringify(left));
+  localStorage.setItem('ronda_mini_history', JSON.stringify(history));
+}
+
+let audioCtx = null;
+function initAudio(){ try{ if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==='suspended')audioCtx.resume(); }catch(e){} }
+function playSound(type){
+  try{
+    initAudio(); if(!audioCtx) return;
+    const now=audioCtx.currentTime, osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    if(type==='click'){ gain.gain.setValueAtTime(.35,now); osc.frequency.setValueAtTime(550,now); osc.frequency.exponentialRampToValueAtTime(100,now+.08); gain.gain.exponentialRampToValueAtTime(.01,now+.08); osc.start(now); osc.stop(now+.08); }
+    else if(type==='depleted'){ osc.type='sawtooth'; gain.gain.setValueAtTime(.28,now); osc.frequency.setValueAtTime(300,now); osc.frequency.linearRampToValueAtTime(120,now+.3); gain.gain.exponentialRampToValueAtTime(.001,now+.35); osc.start(now); osc.stop(now+.35); }
+    else if(type==='milestone'){ gain.gain.setValueAtTime(.45,now); osc.frequency.setValueAtTime(400,now); osc.frequency.exponentialRampToValueAtTime(800,now+.3); gain.gain.exponentialRampToValueAtTime(.01,now+.3); osc.start(now); osc.stop(now+.3); }
+  }catch(e){}
+}
+function vibrate(p){ try{ if('vibrate' in navigator) navigator.vibrate(p); }catch(e){} }
+
+function triggerZeroFlash(){
+  const o=document.createElement('div'); o.className='glass-flash-overlay';
+  o.innerHTML='<div class="glass-flash-text">سالات التفرقة</div>';
+  document.body.appendChild(o); setTimeout(()=>o.remove(),950);
+}
+
+function renderDropped(){
+  const lastFour=history.slice(-4);
+  if(lastFour.length===0){ glassDropped.innerHTML='<span class="glass-pin">📌</span><span class="glass-empty">لا توجد</span>'; return; }
+  glassDropped.innerHTML='<span class="glass-pin">📌</span>';
+  lastFour.forEach((item,idx)=>{
+    const chip=document.createElement('span');
+    chip.className='glass-chip'; chip.textContent='#'+item.num;
+    if(idx===lastFour.length-1) chip.classList.add('latest');
+    glassDropped.appendChild(chip);
+  });
+}
+function renderGrid(){
+  glassGrid.innerHTML='';
+  allNums.forEach(n=>{
+    const cell=document.createElement('div');
+    cell.className='glass-cell c'+left[n];
+    if(left[n]===1) cell.classList.add('danger-pulse');
+    if(left[n]===0) cell.style.cursor='not-allowed';
+    cell.innerHTML=n+'<span class="glass-rem">'+left[n]+'</span>';
+    cell.onclick=(e)=>{e.preventDefault(); initAudio(); handleTap(n);};
+    glassGrid.appendChild(cell);
+  });
+}
+function renderCounter(){
+  const r=Object.values(left).reduce((a,b)=>a+b,0);
+  glassCounter.textContent=r;
+  glassCounter.classList.toggle('low',r>0&&r<=8);
+  glassCounter.classList.toggle('done',r===0);
+}
+function render(){ renderDropped(); renderGrid(); renderCounter(); }
+
+function handleTap(n){
+  if(left[n]<=0) return;
+  const dep=(left[n]===1);
+  left[n]--; history.push({num:n,time:Date.now()}); saveData();
+  const r=Object.values(left).reduce((a,b)=>a+b,0);
+  if(r===0){ playSound('milestone'); vibrate([150,100,150,100,300]); triggerZeroFlash(); }
+  else if(r===40||r===24||r===12){ playSound('milestone'); vibrate([100,50,100,50,200]); }
+  else if(dep){ playSound('depleted'); vibrate([80,50,80]); }
+  else { playSound('click'); vibrate(20); }
+  render();
+}
+
+glassUndo.onclick=()=>{ initAudio(); const e=history.pop(); if(e!==undefined){ left[e.num]++; saveData(); playSound('click'); vibrate(20); render(); } };
+glassReset.onclick=()=>{ initAudio(); left=Object.fromEntries(allNums.map(n=>[n,4])); history=[]; localStorage.removeItem('ronda_mini_left'); localStorage.removeItem('ronda_mini_history'); playSound('milestone'); vibrate(40); render(); };
+
+let isMinimized=false;
+glassMini.onclick=(e)=>{
+  e.stopPropagation(); isMinimized=!isMinimized;
+  const g=document.getElementById('glassGrid'), d=glassDropped, f=document.querySelector('.glass-footer');
+  if(isMinimized){ g.style.display='none'; d.style.display='none'; f.style.display='none'; glassMini.textContent='+'; glassWindow.style.width='60px'; glassWindow.style.padding='6px'; }
+  else { g.style.display=''; d.style.display=''; f.style.display=''; glassMini.textContent='−'; glassWindow.style.width='min(320px,92vw)'; glassWindow.style.padding='10px'; }
+};
+
+let isDragging=false, dragStartX=0, dragStartY=0, winStartX=0, winStartY=0;
+glassWindow.addEventListener('pointerdown',(e)=>{
+  if(e.target.closest('button,.glass-cell,.glass-mini')) return;
+  isDragging=true; dragStartX=e.clientX; dragStartY=e.clientY;
+  const r=glassWindow.getBoundingClientRect();
+  winStartX=r.left; winStartY=r.top;
+  glassWindow.style.right='auto'; glassWindow.style.left=winStartX+'px'; glassWindow.style.top=winStartY+'px';
+  glassWindow.classList.add('dragging'); glassWindow.setPointerCapture(e.pointerId);
+});
+glassWindow.addEventListener('pointermove',(e)=>{
+  if(!isDragging) return;
+  const dx=e.clientX-dragStartX, dy=e.clientY-dragStartY;
+  let x=winStartX+dx, y=winStartY+dy;
+  const maxX=window.innerWidth-glassWindow.offsetWidth, maxY=window.innerHeight-glassWindow.offsetHeight;
+  x=Math.max(0,Math.min(maxX,x)); y=Math.max(0,Math.min(maxY,y));
+  glassWindow.style.left=x+'px'; glassWindow.style.top=y+'px';
+});
+glassWindow.addEventListener('pointerup',(e)=>{
+  if(!isDragging) return;
+  isDragging=false; glassWindow.classList.remove('dragging');
+  try{ glassWindow.releasePointerCapture(e.pointerId); }catch(_){}
+  const r=glassWindow.getBoundingClientRect();
+  localStorage.setItem('ronda_mini_pos',JSON.stringify({left:r.left,top:r.top}));
+});
+
+const savedPos=JSON.parse(localStorage.getItem('ronda_mini_pos'));
+if(savedPos&&savedPos.left!==undefined){ glassWindow.style.right='auto'; glassWindow.style.left=savedPos.left+'px'; glassWindow.style.top=savedPos.top+'px'; }
+
+window.addEventListener('resize',()=>{
+  const r=glassWindow.getBoundingClientRect();
+  const maxX=window.innerWidth-glassWindow.offsetWidth, maxY=window.innerHeight-glassWindow.offsetHeight;
+  if(r.left>maxX) glassWindow.style.left=Math.max(0,maxX)+'px';
+  if(r.top>maxY) glassWindow.style.top=Math.max(0,maxY)+'px';
+});
+
+render();
+</script>
+</body>
+</html>
