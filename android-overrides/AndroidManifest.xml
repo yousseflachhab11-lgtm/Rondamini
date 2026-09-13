@@ -3,8 +3,6 @@
 
     <!-- ⚡ الإذن الرئيسي للـ Overlay -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -29,14 +27,9 @@
             </intent-filter>
         </activity>
 
-        <!-- ⚡ الـ Service ديال الـ Overlay -->
+        <!-- ⚡ الـ Service ديال الـ Overlay (بلا foreground) -->
         <service
             android:name=".OverlayService"
-            android:exported="false"
-            android:foregroundServiceType="specialUse">
-            <property
-                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="floating_calculator_overlay" />
-        </service>
+            android:exported="false" />
     </application>
 </manifest>
