@@ -20,7 +20,6 @@ public class OverlayService extends Service {
     private WindowManager windowManager;
     private WebView webView;
     private WindowManager.LayoutParams params;
-    private boolean isViewAdded = false;
 
     @Nullable
     @Override
@@ -36,49 +35,14 @@ public class OverlayService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null && intent.getAction() != null) {
-            String action = intent.getAction();
-
-            if ("HIDE_OVERLAY".equals(action)) {
-                hideOverlay();
-            } else if ("SHOW_OVERLAY".equals(action)) {
-                showOverlay();
-            }
-        }
-        return START_STICKY;
-    }
-
-    private void hideOverlay() {
-        if (isViewAdded && webView != null && windowManager != null) {
-            try {
-                windowManager.removeView(webView);
-                isViewAdded = false;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void showOverlay() {
-        if (!isViewAdded && webView != null && windowManager != null && params != null) {
-            try {
-                windowManager.addView(webView, params);
-                isViewAdded = true;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
     public void onCreate() {
         super.onCreate();
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        int widthPx = dpToPx(300);
-        int heightPx = dpToPx(370);
+        // ⚡ الحجم الصغير — بحجم Rondacalcul
+        int widthPx = dpToPx(260);
+        int heightPx = dpToPx(340);
 
         params = new WindowManager.LayoutParams(
             widthPx,
@@ -90,8 +54,8 @@ public class OverlayService extends Service {
             PixelFormat.TRANSLUCENT
         );
         params.gravity = Gravity.TOP | Gravity.END;
-        params.x = dpToPx(10);
-        params.y = dpToPx(50);
+        params.x = dpToPx(5);
+        params.y = dpToPx(40);
 
         webView = new WebView(this);
         webView.setBackgroundColor(Color.TRANSPARENT);
@@ -105,18 +69,18 @@ public class OverlayService extends Service {
 
         webView.loadUrl("file:///android_asset/public/index.html");
 
-        try {
-            windowManager.addView(webView, params);
-            isViewAdded = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        windowManager.addView(webView, params);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        hideOverlay();
-        webView = null;
+        if (webView != null && windowManager != null) {
+            try {
+                windowManager.removeView(webView);
+            } catch (Exception e) {
+                // تجاهل
+            }
+        }
     }
 }
