@@ -33,6 +33,7 @@ html,body{
   --rem-color:#fff;
 }
 
+/* ⚡ النافذة الزجاجية */
 .glass-window{
   position:fixed;
   top:0;left:0;
@@ -50,16 +51,6 @@ html,body{
   transform:translate3d(0,0,0);
   backface-visibility:hidden;
   -webkit-backface-visibility:hidden;
-}
-
-.glass-window.hiding{
-  transition:transform .3s ease, opacity .3s ease;
-}
-
-.glass-window.hidden-overlay{
-  transform:translate3d(0, calc(100vh + 50px), 0) !important;
-  opacity:0;
-  pointer-events:none !important;
 }
 
 @media (orientation: landscape) {
@@ -152,17 +143,18 @@ html,body{
 .glass-plus{top:-14px;right:-14px;background:rgba(46,204,85,.95)}
 .glass-ctrl:active{transform:scale(.9)}
 
+/* ⚡ زر الإخفاء/الإظهار — ثابت فوق على الشاشة */
 .toggle-overlay-btn{
   position:fixed;
   top:10px;
   right:10px;
-  width:50px;
-  height:50px;
+  width:56px;
+  height:56px;
   border-radius:50%;
   background:linear-gradient(135deg,#3b82f6,#1e40af);
   border:3px solid #fff;
   color:#fff;
-  font-size:22px;
+  font-size:24px;
   font-weight:900;
   cursor:pointer;
   display:flex;
@@ -181,6 +173,7 @@ html,body{
 </head>
 <body>
 
+<!-- ⚡ زر الإخفاء/الإظهار — ثابت، ما كيختفيش -->
 <button class="toggle-overlay-btn" id="toggleOverlayBtn" title="إخفاء/إظهار">⬇️</button>
 
 <div class="glass-window" id="glassWindow">
@@ -390,39 +383,34 @@ glassMinus.onclick = (e) => {
   playSound('click'); vibrate(15);
 };
 
-/* ⚡ زر الإخفاء — كيتواصل مع AndroidOverlay */
+/* ============================================================
+   ⚡ زر الإخفاء / الإظهار
+   ============================================================ */
 let isHidden = false;
+
 toggleBtn.onclick = (e) => {
   e.stopPropagation();
   isHidden = !isHidden;
 
   if(isHidden){
-    glassWindow.classList.add('hiding');
-    glassWindow.classList.add('hidden-overlay');
+    // ⚡ نخبيو الـ Overlay كامل
     toggleBtn.textContent = '⬆️';
     toggleBtn.classList.add('hidden-mode');
 
-    if(typeof AndroidOverlay !== 'undefined' && AndroidOverlay.setTouchable){
-      try{ AndroidOverlay.setTouchable(false); }catch(err){}
+    // ⚡ نخبيو الـ WebView (من Java)
+    if(typeof AndroidOverlay !== 'undefined' && AndroidOverlay.hideOverlay){
+      try{ AndroidOverlay.hideOverlay(); }catch(err){}
     }
 
-    setTimeout(() => {
-      glassWindow.classList.remove('hiding');
-    }, 350);
-
   } else {
-    glassWindow.classList.add('hiding');
-    glassWindow.classList.remove('hidden-overlay');
+    // ⚡ نرجعو الـ Overlay
     toggleBtn.textContent = '⬇️';
     toggleBtn.classList.remove('hidden-mode');
 
-    if(typeof AndroidOverlay !== 'undefined' && AndroidOverlay.setTouchable){
-      try{ AndroidOverlay.setTouchable(true); }catch(err){}
+    // ⚡ نرجعو الـ WebView (من Java)
+    if(typeof AndroidOverlay !== 'undefined' && AndroidOverlay.showOverlay){
+      try{ AndroidOverlay.showOverlay(); }catch(err){}
     }
-
-    setTimeout(() => {
-      glassWindow.classList.remove('hiding');
-    }, 350);
   }
 
   playSound('click');
