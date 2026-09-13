@@ -2,19 +2,26 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Ronda Mini - Glass</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Rondacalcul</title>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0a0a0a">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;touch-action:manipulation}
 
-/* ⚠️ مهم: الخلفية شفافة تماماً باش يبان التطبيق اللي تحت */
+/* ⚡ المهم: منع اللمس على الخلفية */
 html,body{
+  margin:0;padding:0;
+  width:100%;height:100%;
+  overflow:hidden;
+  font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
   background:transparent !important;
+  pointer-events:none !important;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
 }
 
 :root{
@@ -27,12 +34,12 @@ html,body{
   --rem-color:#fff;
 }
 
-/* ================= النافذة الزجاجية ================= */
+/* ================= النافذة ================= */
 .glass-window{
   position:fixed;
-  top:60px;
-  right:12px;
-  width:min(320px, 92vw);
+  top:0;
+  left:0;
+  width:320px;
   background:var(--glass-bg);
   backdrop-filter:blur(14px) saturate(150%);
   -webkit-backdrop-filter:blur(14px) saturate(150%);
@@ -43,12 +50,42 @@ html,body{
     inset 0 1px 0 rgba(255,255,255,.2);
   z-index:99999;
   padding:10px;
-  user-select:none;
-  transition:box-shadow .2s, opacity .2s;
+  
+  pointer-events:auto !important;
+  
+  will-change:transform;
+  transform:translate3d(0,0,0);
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  
+  transition: box-shadow .2s;
 }
-.glass-window.dragging{
-  box-shadow:0 16px 48px rgba(0,0,0,.65);
-  cursor:grabbing;
+
+/* ================= الوضع الأفقي ================= */
+@media (orientation: landscape) {
+  .glass-window {
+    width: 260px;
+    padding: 8px;
+  }
+  .glass-cell {
+    font-size: 18px;
+  }
+  .glass-counter {
+    font-size: 18px;
+    height: 34px;
+    min-width: 48px;
+  }
+  .glass-action {
+    height: 34px;
+    font-size: 14px;
+  }
+  .glass-dropped {
+    min-height: 28px;
+  }
+  .glass-chip {
+    font-size: 13px;
+    padding: 3px 6px;
+  }
 }
 
 /* ================= شريط آخر 4 أوراق ================= */
@@ -111,12 +148,13 @@ html,body{
   border-radius:10px;
   color:var(--text-main);
   font-weight:900;
-  font-size:clamp(20px,6vw,26px);
+  font-size:22px;
   letter-spacing:-0.5px;
   cursor:pointer;
   transition:transform .08s, background .2s;
   -webkit-user-select:none;
   user-select:none;
+  pointer-events:auto;
 }
 .glass-cell:active{transform:scale(.93)}
 
@@ -191,59 +229,44 @@ html,body{
   font-weight:900;
   cursor:pointer;
   transition:transform .08s, background .2s;
+  pointer-events:auto;
 }
 .glass-action:active{transform:scale(.94)}
 .glass-undo{flex:2}
 .glass-reset{background:rgba(255,255,255,.2)}
 .glass-reset:active{background:rgba(255,255,255,.32)}
 
-/* ================= زر تصغير/تكبير ================= */
-.glass-mini{
+/* ================= أزرار التحكم ================= */
+.glass-ctrl{
   position:absolute;
-  top:-12px;
-  left:-12px;
-  width:28px;
-  height:28px;
+  width:32px;
+  height:32px;
   border-radius:50%;
-  background:rgba(230,59,59,.9);
   border:2px solid #fff;
   color:#fff;
-  font-size:14px;
+  font-size:18px;
   font-weight:900;
   cursor:pointer;
   display:flex;
   align-items:center;
   justify-content:center;
   box-shadow:0 4px 12px rgba(0,0,0,.4);
+  z-index:10;
+  pointer-events:auto;
 }
-.glass-mini:active{transform:scale(.9)}
+.glass-minus{
+  top:-14px;
+  left:-14px;
+  background:rgba(230,59,59,.95);
+}
+.glass-plus{
+  top:-14px;
+  right:-14px;
+  background:rgba(46,204,85,.95);
+}
+.glass-ctrl:active{transform:scale(.9)}
 
-/* ================= فلاشات ================= */
-@keyframes glassFlash{
-  0%{background:rgba(255,255,255,0)}
-  30%{background:rgba(255,255,255,.85)}
-  100%{background:rgba(255,255,255,0)}
-}
-.glass-flash-overlay{
-  position:fixed;
-  inset:0;
-  z-index:99998;
-  pointer-events:none;
-  animation:glassFlash .9s ease-out forwards;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.glass-flash-text{
-  font-size:26px;
-  font-weight:900;
-  color:#111;
-  background:#fff;
-  padding:10px 20px;
-  border-radius:12px;
-  box-shadow:0 8px 25px rgba(0,0,0,.3);
-}
-
+/* ================= فلاش ================= */
 @keyframes glassScreenFlash{
   0%{filter:brightness(1)}
   30%{filter:brightness(1.8) hue-rotate(90deg)}
@@ -256,7 +279,8 @@ html,body{
 <body>
 
 <div class="glass-window" id="glassWindow">
-  <button class="glass-mini" id="glassMini" title="تصغير">−</button>
+  <button class="glass-ctrl glass-minus" id="glassMinus" title="تصغير">−</button>
+  <button class="glass-ctrl glass-plus" id="glassPlus" title="تكبير">+</button>
   <div class="glass-dropped" id="glassDropped">
     <span class="glass-pin">📌</span>
     <span class="glass-empty" id="glassEmpty">لا توجد</span>
@@ -270,6 +294,10 @@ html,body{
 </div>
 
 <script>
+/* ============================================================
+   Rondacalcul v4 - Floating فوق Ronda
+   ============================================================ */
+
 const allNums = [1,2,3,4,5,6,7,10,11,12];
 
 let left = JSON.parse(localStorage.getItem('ronda_mini_left')) || Object.fromEntries(allNums.map(n=>[n,4]));
@@ -282,13 +310,15 @@ const glassDropped = document.getElementById('glassDropped');
 const glassCounter = document.getElementById('glassCounter');
 const glassUndo    = document.getElementById('glassUndo');
 const glassReset   = document.getElementById('glassReset');
-const glassMini    = document.getElementById('glassMini');
+const glassMinus   = document.getElementById('glassMinus');
+const glassPlus    = document.getElementById('glassPlus');
 
 function saveData(){
   localStorage.setItem('ronda_mini_left', JSON.stringify(left));
   localStorage.setItem('ronda_mini_history', JSON.stringify(history));
 }
 
+/* ================= الصوت ================= */
 let audioCtx = null;
 function initAudio(){
   try{
@@ -337,14 +367,7 @@ function triggerScreenFlash(){
   glassWindow.classList.add('screen-flash');
 }
 
-function triggerZeroFlash(){
-  const overlay = document.createElement('div');
-  overlay.className = 'glass-flash-overlay';
-  overlay.innerHTML = `<div class="glass-flash-text">سالات التفرقة</div>`;
-  document.body.appendChild(overlay);
-  setTimeout(()=>overlay.remove(), 950);
-}
-
+/* ================= الرسم ================= */
 function renderDropped(){
   const lastFour = history.slice(-4);
   if(lastFour.length === 0){
@@ -370,7 +393,7 @@ function renderGrid(){
     if(left[n] === 1) cell.classList.add('danger-pulse');
     if(left[n] === 0) cell.style.cursor = 'not-allowed';
     cell.innerHTML = `${n}<span class="glass-rem">${left[n]}</span>`;
-    cell.onclick = (e) => { e.preventDefault(); initAudio(); handleTap(n); };
+    cell.onclick = (e) => { e.preventDefault(); e.stopPropagation(); initAudio(); handleTap(n); };
     glassGrid.appendChild(cell);
   });
 }
@@ -407,7 +430,8 @@ function handleTap(n){
   render();
 }
 
-glassUndo.onclick = () => {
+glassUndo.onclick = (e) => {
+  e.stopPropagation();
   initAudio();
   const entry = history.pop();
   if(entry !== undefined){
@@ -416,7 +440,8 @@ glassUndo.onclick = () => {
   }
 };
 
-glassReset.onclick = () => {
+glassReset.onclick = (e) => {
+  e.stopPropagation();
   initAudio();
   left = Object.fromEntries(allNums.map(n=>[n,4]));
   history = [];
@@ -425,127 +450,168 @@ glassReset.onclick = () => {
   playSound('milestone'); vibrate(40); triggerScreenFlash(); render();
 };
 
-/* ===== تصغير/تكبير ===== */
-let isMinimized = false;
-glassMini.onclick = (e) => {
-  e.stopPropagation();
-  isMinimized = !isMinimized;
-  const grid = document.getElementById('glassGrid');
-  const dropped = document.getElementById('glassDropped');
-  const footer = document.querySelector('.glass-footer');
-  if(isMinimized){
-    grid.style.display = 'none';
-    dropped.style.display = 'none';
-    footer.style.display = 'none';
-    glassMini.textContent = '+';
-    glassWindow.style.width = '60px';
-    glassWindow.style.padding = '6px';
+/* ============================================================
+   Scale + Position + Rotation
+   ============================================================ */
+let currentX = 0, currentY = 0;
+let currentScale = parseFloat(localStorage.getItem('ronda_mini_scale')) || 1;
+
+// استرجاع الموضع (نسبة مئوية باش يخدم مع أي شاشة)
+(function(){
+  const saved = JSON.parse(localStorage.getItem('ronda_mini_pos_v4'));
+  if(saved && saved.xPct !== undefined){
+    // نستعملو نسبة مئوية
+    currentX = (saved.xPct / 100) * window.innerWidth;
+    currentY = (saved.yPct / 100) * window.innerHeight;
   } else {
-    grid.style.display = '';
-    dropped.style.display = '';
-    footer.style.display = '';
-    glassMini.textContent = '−';
-    glassWindow.style.width = 'min(320px, 92vw)';
-    glassWindow.style.padding = '10px';
+    currentX = Math.max(10, window.innerWidth - 340);
+    currentY = 60;
   }
-};
+  clampPosition();
+})();
 
-/* ============ السحب (محسّن بـ transform3d) ============ */
-let isDragging = false;
-let dragStartX = 0, dragStartY = 0;
-let posX = 0, posY = 0;           // موضع البداية
-let currentX = 0, currentY = 0;   // الموضع الحالي
-let rafId = null;
-
-// استرجاع الموضع من localStorage
-const savedPos = JSON.parse(localStorage.getItem('ronda_mini_pos'));
-if(savedPos && savedPos.left !== undefined){
-  currentX = savedPos.left;
-  currentY = savedPos.top;
-} else {
-  currentX = window.innerWidth - 332;
-  currentY = 60;
+function clampPosition(){
+  const w = glassWindow.offsetWidth * currentScale;
+  const h = glassWindow.offsetHeight * currentScale;
+  const maxX = window.innerWidth - w;
+  const maxY = window.innerHeight - h;
+  currentX = Math.max(0, Math.min(maxX, currentX));
+  currentY = Math.max(0, Math.min(maxY, currentY));
 }
-if(currentX < 0) currentX = 10;
-if(currentY < 0) currentY = 10;
 
-// دالة التطبيق (سريعة بـ GPU)
 function applyTransform(){
-  glassWindow.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+  glassWindow.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) scale(${currentScale})`;
+  glassWindow.style.transformOrigin = 'top left';
 }
-
-// تطبيق أولي
 applyTransform();
 
-// نحيّد left/top/right من CSS باش ما يتعارضوش
-glassWindow.style.left = '0';
-glassWindow.style.top = '0';
-glassWindow.style.right = 'auto';
+/* ============================================================
+   التحكم فالحجم (+ و −)
+   ============================================================ */
+glassPlus.onclick = (e) => {
+  e.stopPropagation();
+  currentScale = Math.min(2.5, currentScale + 0.1);
+  localStorage.setItem('ronda_mini_scale', currentScale);
+  clampPosition();
+  applyTransform();
+  playSound('click');
+  vibrate(15);
+};
 
-// ============ Drag ============
-glassWindow.addEventListener('pointerdown', (e) => {
-  if(e.target.closest('button, .glass-cell, .glass-mini')) return;
+glassMinus.onclick = (e) => {
+  e.stopPropagation();
+  currentScale = Math.max(0.4, currentScale - 0.1);
+  localStorage.setItem('ronda_mini_scale', currentScale);
+  clampPosition();
+  applyTransform();
+  playSound('click');
+  vibrate(15);
+};
+
+/* ============================================================
+   السحب
+   ============================================================ */
+let isDragging = false;
+let dragStartX = 0, dragStartY = 0;
+let posStartX = 0, posStartY = 0;
+let rafId = null;
+
+function startDrag(clientX, clientY){
   isDragging = true;
-  dragStartX = e.clientX;
-  dragStartY = e.clientY;
-  posX = currentX;
-  posY = currentY;
-  glassWindow.classList.add('dragging');
-  try{ glassWindow.setPointerCapture(e.pointerId); }catch(_){}
-});
+  dragStartX = clientX;
+  dragStartY = clientY;
+  posStartX = currentX;
+  posStartY = currentY;
+}
 
-glassWindow.addEventListener('pointermove', (e) => {
+function moveDrag(clientX, clientY){
   if(!isDragging) return;
-
-  const dx = e.clientX - dragStartX;
-  const dy = e.clientY - dragStartY;
-
-  let x = posX + dx;
-  let y = posY + dy;
-
-  // حدود الشاشة
-  const maxX = window.innerWidth  - glassWindow.offsetWidth;
-  const maxY = window.innerHeight - glassWindow.offsetHeight;
+  const dx = (clientX - dragStartX) / currentScale;
+  const dy = (clientY - dragStartY) / currentScale;
+  
+  let x = posStartX + dx;
+  let y = posStartY + dy;
+  
+  const w = glassWindow.offsetWidth * currentScale;
+  const h = glassWindow.offsetHeight * currentScale;
+  const maxX = window.innerWidth - w;
+  const maxY = window.innerHeight - h;
   x = Math.max(0, Math.min(maxX, x));
   y = Math.max(0, Math.min(maxY, y));
-
+  
   currentX = x;
   currentY = y;
-
-  // استعمل requestAnimationFrame باش يكون سلس
+  
   if(rafId) cancelAnimationFrame(rafId);
   rafId = requestAnimationFrame(applyTransform);
-}, { passive: false });
+}
 
-glassWindow.addEventListener('pointerup', (e) => {
+function endDrag(){
   if(!isDragging) return;
   isDragging = false;
-  glassWindow.classList.remove('dragging');
-  try{ glassWindow.releasePointerCapture(e.pointerId); }catch(_){}
-
-  // حفظ الموضع
-  localStorage.setItem('ronda_mini_pos', JSON.stringify({
-    left: currentX,
-    top: currentY
+  // نحفظ كنسبة مئوية باش يخدم مع الدوران
+  const xPct = (currentX / window.innerWidth) * 100;
+  const yPct = (currentY / window.innerHeight) * 100;
+  localStorage.setItem('ronda_mini_pos_v4', JSON.stringify({
+    xPct: xPct,
+    yPct: yPct
   }));
+}
+
+/* === Touch === */
+glassWindow.addEventListener('touchstart', (e) => {
+  if(e.target.closest('button, .glass-cell')) return;
+  const t = e.touches[0];
+  startDrag(t.clientX, t.clientY);
+}, {passive:true});
+
+glassWindow.addEventListener('touchmove', (e) => {
+  if(!isDragging) return;
+  const t = e.touches[0];
+  moveDrag(t.clientX, t.clientY);
+  e.preventDefault();
+}, {passive:false});
+
+glassWindow.addEventListener('touchend', endDrag);
+glassWindow.addEventListener('touchcancel', endDrag);
+
+/* === Mouse === */
+glassWindow.addEventListener('mousedown', (e) => {
+  if(e.target.closest('button, .glass-cell')) return;
+  startDrag(e.clientX, e.clientY);
+  e.preventDefault();
 });
 
-// ============ إعادة الحساب عند تغيير حجم الشاشة ============
-window.addEventListener('resize', () => {
-  const maxX = window.innerWidth  - glassWindow.offsetWidth;
-  const maxY = window.innerHeight - glassWindow.offsetHeight;
-  if(currentX > maxX) currentX = Math.max(0, maxX);
-  if(currentY > maxY) currentY = Math.max(0, maxY);
-  applyTransform();
-});
-window.addEventListener('resize', () => {
-  const rect = glassWindow.getBoundingClientRect();
-  const maxX = window.innerWidth  - glassWindow.offsetWidth;
-  const maxY = window.innerHeight - glassWindow.offsetHeight;
-  if(rect.left > maxX) glassWindow.style.left = Math.max(0, maxX) + 'px';
-  if(rect.top  > maxY) glassWindow.style.top  = Math.max(0, maxY) + 'px';
+document.addEventListener('mousemove', (e) => {
+  if(!isDragging) return;
+  moveDrag(e.clientX, e.clientY);
 });
 
+document.addEventListener('mouseup', endDrag);
+
+/* ============================================================
+   الدوران (Rotation)
+   ============================================================ */
+function handleRotation(){
+  // نستنى باش الشاشة تكمل الدوران
+  setTimeout(() => {
+    // نعاود نحسب الموضع من النسبة المئوية
+    const saved = JSON.parse(localStorage.getItem('ronda_mini_pos_v4'));
+    if(saved && saved.xPct !== undefined){
+      currentX = (saved.xPct / 100) * window.innerWidth;
+      currentY = (saved.yPct / 100) * window.innerHeight;
+    }
+    clampPosition();
+    applyTransform();
+  }, 300);
+}
+
+window.addEventListener('resize', handleRotation);
+window.addEventListener('orientationchange', handleRotation);
+
+/* ============================================================
+   تشغيل
+   ============================================================ */
 render();
 </script>
 </body>
