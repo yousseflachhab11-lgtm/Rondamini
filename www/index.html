@@ -33,6 +33,7 @@ html,body{
   --rem-color:#fff;
 }
 
+/* ⚡ النافذة الزجاجية — بلا transition (سريعة) */
 .glass-window{
   position:fixed;
   top:0;left:0;
@@ -50,6 +51,18 @@ html,body{
   transform:translate3d(0,0,0);
   backface-visibility:hidden;
   -webkit-backface-visibility:hidden;
+}
+
+/* ⚡ transition غير منين كتختفي/ترجع */
+.glass-window.hiding{
+  transition:transform .3s ease, opacity .3s ease;
+}
+
+/* ⚡ الوضع المخفي */
+.glass-window.hidden-overlay{
+  transform:translate3d(0, calc(100vh + 50px), 0) !important;
+  opacity:0;
+  pointer-events:none !important;
 }
 
 @media (orientation: landscape) {
@@ -142,33 +155,41 @@ html,body{
 .glass-plus{top:-14px;right:-14px;background:rgba(46,204,85,.95)}
 .glass-ctrl:active{transform:scale(.9)}
 
-/* ⚡ زر تفعيل الـ Overlay */
-.glass-overlay{
-  bottom:-14px;
-  left:50%;
-  margin-left:-16px;
-  background:rgba(59,130,246,.95);
-  width:32px;
-  height:32px;
-  font-size:14px;
-  padding:0;
+/* ⚡ زر الإخفاء — ثابت فوق على الشاشة */
+.toggle-overlay-btn{
+  position:fixed;
+  top:10px;
+  right:10px;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#3b82f6,#1e40af);
+  border:3px solid #fff;
+  color:#fff;
+  font-size:22px;
+  font-weight:900;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 4px 16px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.3);
+  z-index:100001;
+  pointer-events:auto !important;
+  transition:transform .15s, background .2s;
 }
-
-@keyframes glassScreenFlash{
-  0%{filter:brightness(1)}
-  30%{filter:brightness(1.8) hue-rotate(90deg)}
-  60%{filter:brightness(.7)}
-  100%{filter:brightness(1)}
+.toggle-overlay-btn:active{transform:scale(.9)}
+.toggle-overlay-btn.hidden-mode{
+  background:linear-gradient(135deg,#f59e0b,#d97706);
 }
-.glass-window.screen-flash{animation:glassScreenFlash .55s ease-in-out}
 </style>
 </head>
 <body>
 
+<button class="toggle-overlay-btn" id="toggleOverlayBtn" title="إخفاء/إظهار Rondacalcul">⬇️</button>
+
 <div class="glass-window" id="glassWindow">
   <button class="glass-ctrl glass-minus" id="glassMinus" title="تصغير">−</button>
   <button class="glass-ctrl glass-plus" id="glassPlus" title="تكبير">+</button>
-  <button class="glass-ctrl glass-overlay" id="glassOverlay" title="تفعيل Overlay" style="display:none;">🚀</button>
   <div class="glass-dropped" id="glassDropped">
     <span class="glass-pin">📌</span>
     <span class="glass-empty" id="glassEmpty">لا توجد</span>
@@ -196,7 +217,7 @@ const glassUndo    = document.getElementById('glassUndo');
 const glassReset   = document.getElementById('glassReset');
 const glassMinus   = document.getElementById('glassMinus');
 const glassPlus    = document.getElementById('glassPlus');
-const glassOverlay = document.getElementById('glassOverlay');
+const toggleBtn    = document.getElementById('toggleOverlayBtn');
 
 function saveData(){
   localStorage.setItem('ronda_mini_left', JSON.stringify(left));
@@ -243,12 +264,6 @@ function playSound(type){
 
 function vibrate(pattern){
   try{ if('vibrate' in navigator) navigator.vibrate(pattern); }catch(e){}
-}
-
-function triggerScreenFlash(){
-  glassWindow.classList.remove('screen-flash');
-  void glassWindow.offsetWidth;
-  glassWindow.classList.add('screen-flash');
 }
 
 function renderDropped(){
@@ -304,7 +319,7 @@ function handleTap(n){
   if(remaining === 0){
     playSound('milestone'); vibrate([150,100,150,100,300]);
   } else if(remaining === 40 || remaining === 24 || remaining === 12){
-    playSound('milestone'); vibrate([100,50,100,50,200]); triggerScreenFlash();
+    playSound('milestone'); vibrate([100,50,100,50,200]);
   } else if(willBeDepleted){
     playSound('depleted'); vibrate([80,50,80]);
   } else {
@@ -330,12 +345,9 @@ glassReset.onclick = (e) => {
   history = [];
   localStorage.removeItem('ronda_mini_left');
   localStorage.removeItem('ronda_mini_history');
-  playSound('milestone'); vibrate(40); triggerScreenFlash(); render();
+  playSound('milestone'); vibrate(40); render();
 };
 
-/* ============================================================
-   Scale + Position
-   ============================================================ */
 let currentX = 0, currentY = 0;
 let currentScale = parseFloat(localStorage.getItem('ronda_mini_scale')) || 1;
 
@@ -366,9 +378,6 @@ function applyTransform(){
 }
 applyTransform();
 
-/* ============================================================
-   التحكم فالحجم
-   ============================================================ */
 glassPlus.onclick = (e) => {
   e.stopPropagation();
   currentScale = Math.min(2.5, currentScale + 0.1);
@@ -385,35 +394,45 @@ glassMinus.onclick = (e) => {
   playSound('click'); vibrate(15);
 };
 
-/* ============================================================
-   زر تفعيل الـ Overlay
-   ============================================================ */
-(function(){
-  if(!glassOverlay) return;
+/* ⚡ زر الإخفاء */
+let isHidden = false;
+toggleBtn.onclick = (e) => {
+  e.stopPropagation();
+  isHidden = !isHidden;
   
-  // فحص واش الـ Bridge موجود
-  if(typeof AndroidOverlay !== 'undefined'){
-    glassOverlay.style.display = 'flex';
+  if(isHidden){
+    glassWindow.classList.add('hiding');
+    glassWindow.classList.add('hidden-overlay');
+    toggleBtn.textContent = '⬆️';
+    toggleBtn.classList.add('hidden-mode');
+    
+    if(typeof AndroidOverlay !== 'undefined' && AndroidOverlay.setTouchable){
+      try{ AndroidOverlay.setTouchable(false); }catch(err){}
+    }
+    
+    setTimeout(() => {
+      glassWindow.classList.remove('hiding');
+    }, 350);
+    
   } else {
-    glassOverlay.style.display = 'none';
-    return;
+    glassWindow.classList.add('hiding');
+    glassWindow.classList.remove('hidden-overlay');
+    toggleBtn.textContent = '⬇️';
+    toggleBtn.classList.remove('hidden-mode');
+    
+    if(typeof AndroidOverlay !== 'undefined' && AndroidOverlay.setTouchable){
+      try{ AndroidOverlay.setTouchable(true); }catch(err){}
+    }
+    
+    setTimeout(() => {
+      glassWindow.classList.remove('hiding');
+    }, 350);
   }
   
-  glassOverlay.onclick = (e) => {
-    e.stopPropagation();
-    try {
-      AndroidOverlay.startOverlay();
-    } catch(err){
-      // تجاهل
-    }
-    playSound('click');
-    vibrate(30);
-  };
-})();
+  playSound('click');
+  vibrate(30);
+};
 
-/* ============================================================
-   السحب
-   ============================================================ */
 let isDragging = false;
 let dragStartX = 0, dragStartY = 0;
 let posStartX = 0, posStartY = 0;
@@ -481,9 +500,6 @@ document.addEventListener('mousemove', (e) => {
 
 document.addEventListener('mouseup', endDrag);
 
-/* ============================================================
-   الدوران
-   ============================================================ */
 function handleRotation(){
   setTimeout(() => {
     const saved = JSON.parse(localStorage.getItem('ronda_mini_pos_v4'));
